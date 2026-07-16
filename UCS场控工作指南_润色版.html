@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Oliver Fan">
+  <meta name="description" content="UCS 晚会/音乐会场控工作指南，润色与可视化版本。">
+  <title>UCS 晚会 / 音乐会场控工作指南 · Oliver Fan</title>
+  <style>
+    :root {
+      --bg:#f5f7fb; --surface:#ffffff; --surface2:#edf2f8; --surface3:#e6edf6;
+      --border:rgba(17,34,58,.12); --border-hi:rgba(17,34,58,.22);
+      --text:#14243a; --dim:#617087; --blue:#155eef; --blue2:#0ea5a8;
+      --green:#0b8f68; --amber:#b86408; --red:#c63b48;
+      --blue-dim:rgba(21,94,239,.09); --green-dim:rgba(11,143,104,.09);
+      --amber-dim:rgba(184,100,8,.10); --red-dim:rgba(198,59,72,.09);
+      --shadow:0 18px 50px rgba(24,45,75,.10);
+      --sans:"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      --mono:"SFMono-Regular","JetBrains Mono","Menlo","PingFang SC",monospace;
+    }
+    [data-theme="dark"] {
+      --bg:#07111f; --surface:#0d1a2b; --surface2:#122238; --surface3:#172b45;
+      --border:rgba(164,190,225,.13); --border-hi:rgba(164,190,225,.25);
+      --text:#e9f2ff; --dim:#91a5bf; --blue:#68a2ff; --blue2:#54d2c8;
+      --green:#58d7a9; --amber:#ffc062; --red:#ff7b89;
+      --blue-dim:rgba(104,162,255,.11); --green-dim:rgba(88,215,169,.10);
+      --amber-dim:rgba(255,192,98,.10); --red-dim:rgba(255,123,137,.10);
+      --shadow:0 22px 60px rgba(0,0,0,.30);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.75;overflow-wrap:break-word;
+      background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+      background-size:42px 42px;background-attachment:fixed}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:
+      radial-gradient(circle at 82% 8%,var(--blue-dim),transparent 32%),radial-gradient(circle at 10% 45%,var(--green-dim),transparent 28%)}
+    a{color:var(--blue);text-decoration-thickness:1px;text-underline-offset:3px}
+    .watermark{position:fixed;inset:-10%;z-index:9999;pointer-events:none;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:160px;
+      transform:rotate(-24deg);opacity:.085;color:var(--text);font:700 14px/1 var(--mono);letter-spacing:2px;text-transform:uppercase;overflow:hidden}
+    .watermark span{display:grid;place-items:center;white-space:nowrap}
+    .shell{max-width:1370px;margin:auto;padding:0 34px 80px;display:grid;grid-template-columns:210px minmax(0,1fr);gap:48px}
+    .toc{position:sticky;top:22px;align-self:start;max-height:calc(100vh - 44px);overflow:auto;padding:24px 0;z-index:20}
+    .toc-title{font:700 10px/1.2 var(--mono);letter-spacing:2.4px;color:var(--dim);padding:0 10px 14px;border-bottom:1px solid var(--border);margin-bottom:10px}
+    .toc a{display:block;padding:7px 10px;margin:2px 0;border-left:2px solid transparent;border-radius:0 7px 7px 0;color:var(--dim);text-decoration:none;font-size:12px;line-height:1.35}
+    .toc a:hover,.toc a.active{color:var(--text);background:var(--blue-dim);border-left-color:var(--blue)}
+    .main{min-width:0}
+    .topbar{display:flex;justify-content:flex-end;padding:22px 0 2px;position:relative;z-index:50}
+    .theme{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:8px 13px;font:600 11px var(--mono);cursor:pointer}
+    .hero{position:relative;overflow:hidden;margin:0 0 34px;padding:70px 64px 62px;background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:28px;box-shadow:var(--shadow)}
+    .hero::after{content:"CTRL / SHOW / GO";position:absolute;right:-12px;bottom:-22px;font:800 clamp(48px,8vw,104px)/1 var(--mono);letter-spacing:-6px;color:var(--blue);opacity:.055;white-space:nowrap}
+    .eyebrow{font:700 11px/1 var(--mono);letter-spacing:2.6px;color:var(--blue);text-transform:uppercase;margin-bottom:20px}
+    h1{margin:0;max-width:850px;font-size:clamp(38px,5.5vw,72px);line-height:1.05;letter-spacing:-2.5px}
+    .hero-sub{margin:22px 0 0;max-width:760px;color:var(--dim);font-size:18px}
+    .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+    .chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:7px 11px;font:600 11px var(--mono);color:var(--dim)}
+    .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue)}
+    .quote{margin:26px 0 0;padding:18px 20px;border-left:3px solid var(--blue2);background:rgba(84,210,200,.07);border-radius:0 12px 12px 0;color:var(--text);font-size:15px}
+    section{scroll-margin-top:28px;margin:32px 0;padding:34px;background:var(--surface);border:1px solid var(--border);border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.045)}
+    .sec-kicker{font:700 10px/1 var(--mono);letter-spacing:2px;color:var(--blue);text-transform:uppercase}
+    h2{margin:8px 0 22px;font-size:30px;line-height:1.2;letter-spacing:-.7px}
+    h3{margin:28px 0 12px;font-size:19px;line-height:1.3}
+    h4{margin:0 0 8px;font-size:15px}
+    p{margin:10px 0;color:var(--text)} .muted{color:var(--dim)}
+    .lead{font-size:17px;color:var(--dim);max-width:78ch}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.grid>*{min-width:0}
+    .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .card{padding:20px;border:1px solid var(--border);background:var(--surface2);border-radius:15px}
+    .card-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--blue-dim);color:var(--blue);margin-bottom:14px}
+    .card-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    ul,ol{margin:10px 0;padding-left:1.45em}li{margin:7px 0;padding-left:.18em}li::marker{color:var(--blue)}
+    code,.mono{font-family:var(--mono)} code{font-size:.88em;color:var(--blue);background:var(--blue-dim);padding:2px 6px;border-radius:5px}
+    .callout{margin:18px 0;padding:16px 18px;border-radius:12px;border:1px solid var(--border);border-left:4px solid var(--blue);background:var(--blue-dim)}
+    .callout.warn{border-left-color:var(--amber);background:var(--amber-dim)}
+    .callout.danger{border-left-color:var(--red);background:var(--red-dim)}
+    .callout strong{display:block;margin-bottom:4px}
+    .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:15px}
+    table{width:100%;border-collapse:collapse;font-size:13px;min-width:780px}
+    th{background:var(--surface3);padding:12px 14px;text-align:left;font:700 10px var(--mono);letter-spacing:1px;color:var(--dim);white-space:nowrap}
+    td{padding:13px 14px;border-top:1px solid var(--border);vertical-align:top}tbody tr:nth-child(even){background:var(--blue-dim)}
+    .yes{color:var(--green);font-weight:700}.no{color:var(--dim)}
+    .steps{counter-reset:step;display:grid;gap:12px}
+    .step{counter-increment:step;display:grid;grid-template-columns:46px 1fr;gap:16px;align-items:start;padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--surface2)}
+    .step::before{content:counter(step,decimal-leading-zero);display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--blue);color:white;font:800 12px var(--mono)}
+    .step p{color:var(--dim);font-size:14px;margin:4px 0}.step h4{font-size:16px}
+    .flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:26px 16px;margin-top:20px}
+    .flow-item{position:relative;padding:18px 16px;border:1px solid var(--border);background:var(--surface2);border-radius:14px;min-height:118px}
+    .flow-item:not(:nth-child(4n))::after{content:"→";position:absolute;right:-21px;top:42%;color:var(--blue);font:800 18px var(--mono)}
+    .flow-n{font:800 10px var(--mono);color:var(--blue);letter-spacing:1.5px}.flow-item p{font-size:13px;color:var(--dim);line-height:1.55}
+    .roles{display:grid;grid-template-columns:1fr 42px 1.2fr 42px 1fr;align-items:stretch;gap:8px}
+    .role-arrow{display:grid;place-items:center;color:var(--blue);font-size:22px}.role{padding:20px;border:1px solid var(--border);background:var(--surface2);border-radius:15px}
+    .role small{display:block;color:var(--dim);margin-top:8px;line-height:1.55}
+    .checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:15px}
+    .check{padding:13px 14px 13px 42px;position:relative;background:var(--surface2);border:1px solid var(--border);border-radius:12px;font-size:14px}
+    .check::before{content:"✓";position:absolute;left:14px;top:12px;width:19px;height:19px;display:grid;place-items:center;border-radius:6px;background:var(--green-dim);color:var(--green);font-weight:800}
+    .showloop{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+    .loop{padding:18px;border-top:3px solid var(--blue);background:var(--surface2);border-radius:9px 9px 14px 14px}.loop b{font-size:14px}.loop small{display:block;color:var(--dim);margin-top:6px;line-height:1.5}
+    .footer{text-align:center;color:var(--dim);padding:36px 20px;font-size:12px}.footer .sig{font:800 12px var(--mono);letter-spacing:2px;color:var(--blue);margin-bottom:8px}
+    .license{margin-top:22px;padding:16px;border:1px dashed var(--border-hi);border-radius:12px;color:var(--dim);font-size:12px}
+    @media(max-width:1040px){.shell{grid-template-columns:1fr;padding:0 22px 60px}.toc{position:sticky;top:0;display:flex;gap:4px;max-height:none;overflow-x:auto;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 0;z-index:100}.toc-title{display:none}.toc a{white-space:nowrap;border-left:0;border-bottom:2px solid transparent;border-radius:6px}.toc a.active{border-left:0;border-bottom-color:var(--blue)}.hero{padding:52px 38px}.grid.three{grid-template-columns:1fr 1fr}.flow{grid-template-columns:repeat(2,1fr)}.flow-item:not(:nth-child(4n))::after{display:none}}
+    @media(max-width:700px){.shell{padding:0 14px 44px}.hero{padding:42px 24px;border-radius:19px}.hero-sub{font-size:16px}section{padding:23px;border-radius:17px}.grid,.grid.three,.checklist,.showloop{grid-template-columns:1fr}.roles{grid-template-columns:1fr}.role-arrow{transform:rotate(90deg)}.flow{grid-template-columns:1fr}.watermark{grid-template-columns:repeat(2,1fr)}h2{font-size:25px}}
+    @media print{
+      :root,[data-theme="dark"]{--bg:#fff;--surface:#fff;--surface2:#f5f8fc;--surface3:#edf2f8;--border:rgba(17,34,58,.14);--border-hi:rgba(17,34,58,.23);--text:#14243a;--dim:#5a6b82;--blue:#155eef;--blue2:#0b8f92;--green:#087b58;--amber:#a45604;--red:#b53240;--blue-dim:rgba(21,94,239,.07);--green-dim:rgba(11,143,104,.07);--amber-dim:rgba(184,100,8,.08);--red-dim:rgba(198,59,72,.07);--shadow:none}
+      @page{size:A4;margin:14mm 12mm 15mm}
+      body{background:#fff;background-image:none;font-size:10pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .shell{display:block;max-width:none;padding:0}.toc,.topbar{display:none}.main{width:100%}
+      .hero{min-height:255mm;margin:0;padding:40mm 17mm 20mm;border-radius:0;border:0;box-shadow:none;page-break-after:always;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(145deg,#f8fbff,#eaf1fb)}
+      h1{font-size:37pt;letter-spacing:-1.8pt}.hero-sub{font-size:13pt}.hero-meta{margin-top:18px}.quote{margin-top:24px}
+      section{box-shadow:none;border-radius:12px;padding:20px;margin:0 0 9mm;break-inside:auto;page-break-inside:auto}
+      section>h2,.sec-kicker{break-after:avoid}.card,.step,.callout,.table-wrap,.role,.flow-item,.loop,.check{break-inside:avoid}
+      .grid{gap:10px}.grid.three{grid-template-columns:repeat(3,1fr)}.flow{grid-template-columns:repeat(4,1fr);gap:12px}.flow-item:not(:nth-child(4n))::after{right:-10px}.roles{grid-template-columns:1fr 28px 1.2fr 28px 1fr}.showloop{grid-template-columns:repeat(4,1fr)}
+      .watermark{opacity:.07;grid-template-columns:repeat(3,1fr);grid-auto-rows:135px;font-size:10px}.theme{display:none}
+      .footer{padding:15mm 0 4mm}.license{break-inside:avoid}
+      a{color:inherit;text-decoration:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="watermark" aria-hidden="true"></div>
+  <div class="shell">
+    <nav class="toc" id="toc" aria-label="目录">
+      <div class="toc-title">FIELD MANUAL / INDEX</div>
+      <a href="#intro">00 写在前面</a><a href="#toolkit">01 工具准备</a><a href="#types">02 活动分类</a>
+      <a href="#workflow">03 活动前流程</a><a href="#rehearsal">04 活动彩排</a><a href="#showday">05 正式表演日</a><a href="#closing">06 结语</a>
+    </nav>
+    <main class="main">
+      <div class="topbar"><button class="theme" type="button" onclick="toggleTheme()">LIGHT / DARK</button></div>
+      <header class="hero">
+        <div class="eyebrow">UCS · STAGE CONTROL FIELD MANUAL · V2.0</div>
+        <h1>晚会 / 音乐会<br>场控工作指南</h1>
+        <p class="hero-sub">从素材收集、软件配置到彩排协作与正式演出：一份让你少踩坑、稳稳守住最后一班岗的幕后操作手册。</p>
+        <div class="hero-meta"><span class="chip">Prepared by Oliver Fan</span><span class="chip">Updated 2026</span><span class="chip">Internal Field Guide</span></div>
+        <blockquote class="quote">舞台的光芒或许只在一刻，但真正的精彩，来自幕后每一份周密准备与毫厘不差的协作。祝你好运 🍀</blockquote>
+      </header>
+
+      <section id="intro">
+        <div class="sec-kicker">00 / PREFACE</div><h2>写在前面</h2>
+        <p class="lead">欢迎你翻开这份指南。它会带你快速入门领科晚会的场控管理工作，也会教你处理一些简单的软硬件——当然，还包括“人”——突发状况。</p>
+        <div class="callout"><strong>需要支援？</strong>如果遇到文档没有覆盖的问题，欢迎随时私信联系我：钉钉号 <code>oliverfan0224</code>。</div>
+        <div class="grid three">
+          <div class="card"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M4 7h16M7 4v6M17 4v6M5 11h14v9H5z"/></svg></div><h4>先确认活动性质</h4><p class="muted">时间、地点、供应商参与情况，决定后续工作边界。</p></div>
+          <div class="card"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></div><h4>再锁定素材清单</h4><p class="muted">节目单是命名、收集、彩排与执行的唯一主线。</p></div>
+          <div class="card"><div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 3v10M8 9l4 4 4-4M5 17v3h14v-3"/></svg></div><h4>最后把风险前置</h4><p class="muted">该测的提前测，该关的软件提前关。正式日不适合临场发明。</p></div>
+        </div>
+      </section>
+
+      <section id="toolkit">
+        <div class="sec-kicker">01 / TOOLKIT</div><h2>工具准备</h2>
+        <p class="lead">一场晚会的场控工作，通常需要一套相对固定的软硬件。建议把它们长期放进“工作日包”里，免得临开场四处借设备——那个画面会很狼狈。</p>
+        <div class="grid">
+          <div class="card"><h3 style="margin-top:0">硬件 · 主设备</h3><ul><li>一台功能正常、内存充足的 MacBook，建议 M1 芯片及以上。学校里还没正式用过 Windows；如果你坚持尝试，后果自负。</li><li>一台能查看节目单、也能紧急摇人的设备：手机或 iPad。</li></ul></div>
+          <div class="card"><h3 style="margin-top:0">配件 · 别嫌琐碎</h3><ul><li>Type-C 充电线：防止演到一半黑屏关机——那基本也就完了。</li><li>拓展坞：用于连接 HDMI；中餐厅可能有，但不保证。若电脑耳机孔无法使用，拓展坞最好自带音频口。</li><li>纸巾：有些控台一扬灰，尘螨过敏的人可能先倒下。</li></ul></div>
+        </div>
+        <h3>软件栈</h3>
+        <div class="grid three">
+          <div class="card"><span class="mono yes">VIDEO</span><h4>OBS Studio</h4><p class="muted">视频播放、场景切换与大屏输出。</p></div>
+          <div class="card"><span class="mono yes">AUDIO</span><h4>Farrago / QLab</h4><p class="muted">Farrago 推荐且稳定；QLab 适合已经熟练的人。</p></div>
+          <div class="card"><span class="mono yes">COMMS</span><h4>钉钉 / 微信</h4><p class="muted">用于对接素材、确认变更，以及紧急摇人。</p></div>
+        </div>
+        <div class="callout warn"><strong>经验之谈</strong>为防止表演时电脑出现奇奇怪怪的卡顿，请关闭除多媒体操控软件以外的其他应用，尤其是钉钉和微信。它们负责“摇人”没问题，但别让它们常驻抢戏。</div>
+        <div class="checklist"><div class="check">电源与充电状态正常</div><div class="check">HDMI / 音频接口可用</div><div class="check">素材已逐个打开测试</div><div class="check">通讯设备可独立查看节目单</div></div>
+      </section>
+
+      <section id="types">
+        <div class="sec-kicker">02 / EVENT MAP</div><h2>晚会分类</h2>
+        <p class="lead">接到任务后，先确认活动性质：时间、地点、是否有校外供应商，以及需要准备哪些多媒体形式。下面这张表，能让你在开工前迅速划清责任边界。</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>活动</th><th>场地 / 时间</th><th>音频背景</th><th>视频背景</th><th>灯光操控</th><th>现场设备</th><th>供应商</th></tr></thead>
+          <tbody>
+            <tr><td><b>新生晚会 / 校内多数晚会</b></td><td>校内 · 中餐厅<br>通常 18:00-19:30</td><td class="yes">需要</td><td class="yes">需要</td><td class="yes">需要</td><td>手持 ×4、耳麦、顶灯、音响、大屏 3840×2160</td><td class="no">无</td></tr>
+            <tr><td><b>春季音乐会</b></td><td>校外 · 音乐剧场<br>时间不定</td><td class="yes">需要</td><td class="no">不需要</td><td class="no">不负责</td><td>供应商收音设备、音响</td><td>有：音响控制、灯光</td></tr>
+            <tr><td><b>校园歌手大赛</b></td><td>报告厅 / 中餐厅<br>通常周三晚</td><td class="yes">需要</td><td class="yes">需要</td><td>报告厅不负责<br>中餐厅需要</td><td>供应商收音设备、音响</td><td>决赛有：音响、灯光、大屏</td></tr>
+            <tr><td><b>圣诞 Talent Show</b></td><td>校外 · 大剧场<br>12 月中旬</td><td class="yes">需要</td><td class="yes">需要</td><td class="yes">需要</td><td>供应商收音、音响、灯光、复合大屏</td><td>有：音响、灯光、屏幕切换</td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout"><strong>一句话判断法</strong>校内活动通常自己控得更多；校外大剧场通常由供应商操作设备，你负责把“什么时候做什么”说清楚，并盯住整体协作。</div>
+      </section>
+
+      <section id="workflow">
+        <div class="sec-kicker">03 / PRE-PRODUCTION</div><h2>活动前：把混乱消灭在开场之前</h2>
+        <p class="lead">确认活动性质后，就可以开始准备。越早把人、节目单、素材和命名规则串起来，正式日就越像执行任务，而不是现场拆盲盒。</p>
+        <div class="flow" aria-label="活动前流程图">
+          <div class="flow-item"><span class="flow-n">STEP 01</span><h4>进入工作群</h4><p>连接活动工作人员与节目负责人。</p></div>
+          <div class="flow-item"><span class="flow-n">STEP 02</span><h4>获取节目单</h4><p>锁定序号、节目名和节目类型。</p></div>
+          <div class="flow-item"><span class="flow-n">STEP 03</span><h4>发布收集问卷</h4><p>明确格式、入口与截止时间。</p></div>
+          <div class="flow-item"><span class="flow-n">STEP 04</span><h4>处理与命名</h4><p>建立活动文件夹，统一素材命名。</p></div>
+          <div class="flow-item"><span class="flow-n">STEP 05</span><h4>配置软件</h4><p>将视频、音频素材放入对应软件。</p></div>
+          <div class="flow-item"><span class="flow-n">STEP 06</span><h4>逐个测试</h4><p>确认有声、有画、不掉帧。</p></div>
+          <div class="flow-item"><span class="flow-n">STEP 07</span><h4>准备暖场歌单</h4><p>终于到了展示歌品的环节。</p></div>
+          <div class="flow-item"><span class="flow-n">STEP 08</span><h4>冻结版本</h4><p>带着稳定版本进入彩排。</p></div>
+        </div>
+        <div class="steps" style="margin-top:28px">
+          <div class="step"><div><h4>加入活动工作人员群与节目负责人群</h4><p>筹备初期就进入相关工作群，能让你直接对接素材负责人和其他工作人员；一旦出问题，也能第一时间找到对应的人。</p></div></div>
+          <div class="step"><div><h4>获取节目单 / 顺序列表</h4><p>每场晚会通常都会有节目流程表，它决定你的工作顺序和素材命名方式。请尽早向活动负责人获取，工作群置顶文件也值得先翻一遍。</p><p>至少提取三项：<code>节目序号</code>、<code>节目名</code>、<code>节目类型</code>。</p></div></div>
+          <div class="step"><div><h4>创建素材收集问卷</h4><p>节目负责人群成员到齐后，尽快发布问卷和说明，为各节目预留足够准备时间。务必写清素材选项、文件格式、提交链接与截止时间。为了给自己留条活路，建议把截止日期设在活动前 3-5 天。</p></div></div>
+          <div class="step"><div><h4>素材处理与统一命名</h4><p>为每次活动创建独立文件夹，格式建议为 <code>活动日期-活动名</code>，例如 <code>1216-Talent Show</code>。从问卷后台下载后，按 <code>节目序号-节目名-素材形式</code> 命名，例如 <code>1-难忘今宵-BG</code> 或 <code>1-难忘今宵-BGM</code>；活动主背景单独命名为 <code>Main BG</code>。</p><p>如果节目只有一种素材，素材形式可以不写——规则是为了防错，不是为了给文件名写论文。</p></div></div>
+          <div class="step"><div><h4>配置 OBS 与 Farrago</h4><p>具体软件操作这里不展开，但有一条不能省：彩排前，必须在自己的电脑上把每个素材完整打开一次，确认有声音、画面正常、播放不卡顿。</p></div></div>
+          <div class="step"><div><h4>准备暖场歌单</h4><p>这是我最喜欢的环节，终于可以展示歌品了。建议平时就维护一份稳定的暖场 playlist；如果需要参考，可使用原文中的 Apple Music “BGM Prepick” 歌单。</p></div></div>
+        </div>
+        <div class="callout danger"><strong>数据安全提醒</strong>节目单、问卷截图和节目素材可能包含个人或内部信息。传递文件时请确认对象与权限，公开演示或分享文档前务必完成脱敏。</div>
+      </section>
+
+      <section id="rehearsal">
+        <div class="sec-kicker">04 / REHEARSAL</div><h2>活动彩排：第一次把方案接到真实舞台上</h2>
+        <p class="lead">活动前 1-7 天通常会安排大、小彩排。这是第一次能在现场测试素材与设备的机会。请利用所有串场和空场时间，尽快完成全量素材测试，并与供应商确认灯光、音响和屏幕配置。</p>
+        <h3>供应商协作图</h3>
+        <div class="roles">
+          <div class="role"><span class="mono muted">INPUT</span><h4>策划 / 节目负责人</h4><small>提供节目单、舞台效果诉求、素材与变更信息。</small></div>
+          <div class="role-arrow">→</div>
+          <div class="role" style="border-color:var(--blue);background:var(--blue-dim)"><span class="mono yes">CONTROL HUB</span><h4>你 · 场控</h4><small>翻译需求、统一指令、盯紧时机，把设备与舞台效果串成一个完整执行链。</small></div>
+          <div class="role-arrow">→</div>
+          <div class="role"><span class="mono muted">OUTPUT</span><h4>音响 / 灯光 / 屏幕</h4><small>按指令完成调音、编灯、素材加载与屏幕切换。</small></div>
+        </div>
+        <div class="grid three" style="margin-top:18px">
+          <div class="card"><h4>音响老师</h4><p class="muted">通常很有自己的专业追求，不用过度干预。告诉他需要几支话筒，并预留调音时间即可。记得提前说明电脑音频输入需求，他会提供耳机口音频线。</p></div>
+          <div class="card"><h4>灯光老师</h4><p class="muted">需要节目单来命名灯光素材。彩排时最好把每个节目音频播放一遍，方便完成编灯。开关灯、面光和节目修改需求，都要单独确认。</p></div>
+          <div class="card"><h4>屏幕老师</h4><p class="muted">通常离你最近，也通常比较好沟通。把已命名的素材拷给他，协助配置每个“景”，并由你发出屏幕切换及音视频协作指令。</p></div>
+        </div>
+        <div class="callout warn"><strong>彩排后的版本纪律</strong>为保证稳定，理论上彩排开始后不再修改节目素材。如果节目负责人或老师坚持调整，请先评估自己的时间与精力：优先把设备调通，有余力再帮他们改。善良可以，但别把主线任务弄丢。</div>
+        <div class="checklist"><div class="check">所有素材已在现场完整测试</div><div class="check">电脑音频已接入音响系统</div><div class="check">灯光已按节目单建立编号</div><div class="check">屏幕素材已拷贝并建立场景</div><div class="check">切换指令与责任人已确认</div><div class="check">最终素材版本已冻结</div></div>
+      </section>
+
+      <section id="showday">
+        <div class="sec-kicker">05 / SHOW DAY</div><h2>正式表演日：稳住，然后执行</h2>
+        <p class="lead">如果前面的工作都顺利完成，正式日原则上不应再出现新的工作内容。你只需要按照彩排版本执行，并提前关闭 Mac 上除多媒体操控以外的其他软件——这是避免设备临场抽风最稳妥的方法。</p>
+        <div class="showloop" aria-label="正式演出执行循环">
+          <div class="loop"><b>01 · 看节目单</b><small>确认当前节目与下一节目，保持提前量。</small></div>
+          <div class="loop"><b>02 · 听统一指令</b><small>不要凭感觉抢操作，先确认时机。</small></div>
+          <div class="loop"><b>03 · 执行切换</b><small>音频、视频、屏幕与灯光按彩排方案落地。</small></div>
+          <div class="loop"><b>04 · 复位并预备</b><small>确认输出状态，立即准备下一节目。</small></div>
+        </div>
+        <h3>遇到突发状况时</h3>
+        <div class="grid">
+          <div class="card"><h4>主持人没开话筒</h4><p class="muted">迅速通过既定沟通链路提醒对应人员；不要在多条群里同时制造第二场混乱。</p></div>
+          <div class="card"><h4>设备出现故障</h4><p class="muted">先判断影响范围，再选择恢复、降级或跳过。能保住演出连续性，就不要为追求完美把全场停住。</p></div>
+          <div class="card"><h4>临时要求换素材</h4><p class="muted">确认是否真的来得及、安全且必要。正式日以稳定为第一优先级。</p></div>
+          <div class="card"><h4>自己开始慌了</h4><p class="muted">先呼吸，再处理。突发情况无法完全避免；保持情绪稳定，做力所能及的正确动作就好。</p></div>
+        </div>
+        <div class="callout"><strong>现场原则</strong>稳定优先于炫技，统一指令优先于个人判断，演出连续性优先于局部完美。</div>
+      </section>
+
+      <section id="closing">
+        <div class="sec-kicker">06 / CLOSING NOTE</div><h2>结语</h2>
+        <p class="lead">以上，是我在一年半工作中总结出的流程与小秘诀。希望它们能让你少走一些弯路，更快上手这份工作。</p>
+        <p>受篇幅限制，很多控台操作细节与软件配置并未在这里展开。如果你遇到具体问题，欢迎随时联系我，钉钉号在文档最上方。</p>
+        <blockquote class="quote">一个个成功收工的晚会背后，是众多岗位工作人员的齐心协力。场控更像是在最后站好一班岗，让前期策划与场务的努力，以更完整、更漂亮的状态呈现在观众面前。希望你也能感受到这份工作带来的成就感与乐趣。祝好运 🍀</blockquote>
+        <div class="license"><b>CC License</b><br>《UCS 晚会 / 音乐会场控工作指南》© 2026 Oliver Fan，采用 CC BY-NC-SA 4.0 许可协议。<br>本润色版保留原文核心信息与轻松语气，并增加排版、流程图与执行清单。</div>
+      </section>
+      <footer class="footer"><div class="sig">PREPARED BY OLIVER FAN</div><div>UCS Stage Control Field Manual · Polished Edition · 2026</div><div>水印用于标识来源与提高盗用成本；系统级截图无法由 HTML 或 PDF 完全阻止。</div></footer>
+    </main>
+  </div>
+  <script>
+    const wm=document.querySelector('.watermark');for(let i=0;i<48;i++){const s=document.createElement('span');s.textContent='Prepared By Oliver Fan';wm.appendChild(s)}
+    function toggleTheme(){const root=document.documentElement;root.dataset.theme=root.dataset.theme==='dark'?'light':'dark'}
+    const links=[...document.querySelectorAll('.toc a')];const sections=links.map(a=>({a,el:document.querySelector(a.getAttribute('href'))})).filter(x=>x.el);
+    const ob=new IntersectionObserver(es=>{for(const e of es){if(e.isIntersecting){links.forEach(a=>a.classList.remove('active'));const x=sections.find(x=>x.el===e.target);if(x)x.a.classList.add('active')}}},{rootMargin:'-12% 0px -78% 0px'});sections.forEach(x=>ob.observe(x.el));
+  </script>
+</body>
+</html>
