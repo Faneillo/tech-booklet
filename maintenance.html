@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="author" content="Oliver Fan">
+  <meta name="theme-color" content="#07111f">
+  <title>系统维护中 · System Maintenance</title>
+  <style>
+    :root{
+      color-scheme:light;
+      --bg:#f4f7fb;--surface:#fff;--surface2:#edf2f8;--line:rgba(20,36,58,.12);
+      --line-hi:rgba(20,36,58,.23);--text:#14243a;--dim:#63738a;
+      --blue:#155eef;--teal:#0b8f92;--green:#0b8f68;--amber:#b86408;
+      --blue-dim:rgba(21,94,239,.09);--teal-dim:rgba(11,143,146,.09);
+      --shadow:0 28px 90px rgba(24,45,75,.14);
+      --sans:"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      --mono:"SFMono-Regular","JetBrains Mono","Menlo","PingFang SC",monospace;
+    }
+    [data-theme="dark"]{
+      color-scheme:dark;
+      --bg:#07111f;--surface:#0d1a2b;--surface2:#122238;--line:rgba(164,190,225,.13);
+      --line-hi:rgba(164,190,225,.27);--text:#eaf3ff;--dim:#91a5bf;
+      --blue:#68a2ff;--teal:#54d2c8;--green:#58d7a9;--amber:#ffc062;
+      --blue-dim:rgba(104,162,255,.11);--teal-dim:rgba(84,210,200,.09);
+      --shadow:0 32px 100px rgba(0,0,0,.36);
+    }
+    *{box-sizing:border-box}
+    html,body{min-height:100%;margin:0}
+    body{font-family:var(--sans);color:var(--text);background-color:var(--bg);overflow-x:hidden;
+      background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+      background-size:44px 44px;transition:background-color .25s,color .25s}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
+      radial-gradient(circle at 80% 3%,var(--blue-dim),transparent 33%),
+      radial-gradient(circle at 8% 96%,var(--teal-dim),transparent 30%)}
+    button,select{font:inherit}
+    button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+    .watermark{position:fixed;inset:-15%;z-index:8;pointer-events:none;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;
+      transform:rotate(-24deg);opacity:.045;color:var(--text);font:700 12px/1 var(--mono);letter-spacing:2px;text-transform:uppercase;overflow:hidden}
+    .watermark span{display:grid;place-items:center;white-space:nowrap}
+    .toolbar{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(20px,env(safe-area-inset-right));z-index:30;display:flex;gap:8px;align-items:center}
+    .control{height:38px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 90%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      color:var(--text);border-radius:999px;padding:0 12px;font:700 10px var(--mono);letter-spacing:.4px;cursor:pointer;box-shadow:0 5px 22px rgba(0,0,0,.06)}
+    select.control{appearance:none;padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,var(--dim) 50%),linear-gradient(135deg,var(--dim) 50%,transparent 50%);background-position:calc(100% - 14px) 16px,calc(100% - 10px) 16px;background-size:4px 4px;background-repeat:no-repeat}
+    .control:hover{border-color:var(--line-hi);background-color:var(--surface2)}
+    .theme-control{min-width:78px}.eta-control[aria-pressed="true"]{color:var(--blue);border-color:var(--blue);background:var(--blue-dim)}
+    .page{position:relative;z-index:10;min-height:100vh;display:grid;place-items:center;padding:92px 28px 48px}
+    .panel{width:min(1100px,100%);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+    .primary{position:relative;min-width:0;padding:64px 62px 56px;overflow:hidden}
+    .primary::after{content:"503";position:absolute;right:-25px;bottom:-66px;color:var(--blue);opacity:.045;font:900 210px/1 var(--mono);letter-spacing:-18px;pointer-events:none}
+    .status{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;padding:7px 11px;border:1px solid var(--line);background:var(--surface2);border-radius:999px;color:var(--dim);font:700 10px/1 var(--mono);letter-spacing:1.5px;text-transform:uppercase}
+    .pulse{position:relative;width:8px;height:8px;border-radius:50%;background:var(--amber)}
+    .pulse::after{content:"";position:absolute;inset:-5px;border:1px solid var(--amber);border-radius:50%;animation:ring 2s ease-out infinite}
+    @keyframes ring{0%{transform:scale(.55);opacity:.85}100%{transform:scale(1.65);opacity:0}}
+    .kicker{margin-bottom:14px;color:var(--blue);font:800 10px var(--mono);letter-spacing:2.4px;text-transform:uppercase}
+    h1{margin:0;font-size:clamp(42px,6vw,76px);line-height:1.03;letter-spacing:-3px;text-wrap:balance}
+    .description{max-width:680px;margin:24px 0 0;color:var(--dim);font-size:17px;line-height:1.8;text-wrap:pretty}
+    .progress{position:relative;height:3px;margin:38px 0 28px;background:var(--surface2);border-radius:999px;overflow:hidden}
+    .progress::after{content:"";position:absolute;inset:0 auto 0 0;width:32%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:999px;animation:scan 2.8s ease-in-out infinite}
+    @keyframes scan{0%{transform:translateX(-105%)}60%,100%{transform:translateX(320%)}}
+    .meta{display:flex;flex-wrap:wrap;gap:10px;color:var(--dim);font:700 10px var(--mono)}
+    .meta span{padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface2)}
+    .eta{margin-top:28px;padding:20px;border:1px solid var(--line);border-left:3px solid var(--teal);border-radius:0 14px 14px 0;background:var(--teal-dim);transition:opacity .2s,transform .2s}
+    .eta[hidden]{display:none}
+    .eta-head{display:flex;justify-content:space-between;gap:16px;align-items:start}
+    .eta-label{color:var(--teal);font:800 10px var(--mono);letter-spacing:1.5px;text-transform:uppercase}
+    .eta-time{margin-top:5px;font-size:15px;font-weight:650}
+    .countdown{display:grid;grid-template-columns:repeat(4,minmax(50px,1fr));gap:8px;margin-top:16px}
+    .unit{padding:10px 8px;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+    .value{display:block;font:800 19px/1.1 var(--mono);font-variant-numeric:tabular-nums}
+    .unit small{display:block;margin-top:5px;color:var(--dim);font:700 8px var(--mono);letter-spacing:1px;text-transform:uppercase}
+    .side{position:relative;min-width:0;padding:58px 46px;background:var(--surface2);border-left:1px solid var(--line);display:flex;flex-direction:column;justify-content:center}
+    .side-title{margin:0 0 9px;font-size:20px}.side-copy{margin:0 0 23px;color:var(--dim);font-size:13px;line-height:1.7}
+    .contact-list{display:grid;gap:11px}
+    .contact{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:13px;align-items:center;padding:14px;border:1px solid var(--line);background:var(--surface);border-radius:14px}
+    .contact-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--blue-dim);color:var(--blue);font:900 15px var(--mono)}
+    .contact-label{color:var(--dim);font:700 9px var(--mono);letter-spacing:1.4px;text-transform:uppercase}
+    .contact-value{margin-top:2px;font-size:14px;font-weight:700;overflow-wrap:anywhere}
+    .copy{border:1px solid var(--line);background:var(--surface2);color:var(--dim);border-radius:8px;padding:7px 9px;font:700 9px var(--mono);cursor:pointer}
+    .copy:hover{color:var(--blue);border-color:var(--blue)}
+    .notice{margin-top:18px;padding:14px 15px;border:1px solid var(--line);border-radius:12px;color:var(--dim);font-size:11px;line-height:1.65}
+    .notice b{color:var(--text)}
+    .signature{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font:700 9px var(--mono);letter-spacing:1.4px}
+    .noscript{position:fixed;inset:auto 20px 20px;z-index:100;padding:12px 15px;background:#fff3cd;color:#5f4300;border:1px solid #e8c96d;border-radius:10px;font-size:13px}
+    .toast{position:fixed;z-index:50;left:50%;bottom:28px;transform:translate(-50%,20px);opacity:0;padding:10px 14px;border-radius:999px;background:var(--text);color:var(--bg);font:700 10px var(--mono);pointer-events:none;transition:.2s}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:850px){.panel{grid-template-columns:1fr}.primary{padding:55px 38px 44px}.side{padding:38px;border-left:0;border-top:1px solid var(--line)}h1{letter-spacing:-2px}.watermark{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:560px){.toolbar{top:12px;right:12px;left:12px;justify-content:flex-end;gap:5px}.control{height:35px;padding:0 9px;font-size:9px}.theme-control{min-width:64px}.page{padding:72px 12px 20px;align-items:start}.panel{border-radius:19px}.primary,.side{padding:36px 23px}h1{font-size:40px;letter-spacing:-1.6px}.description{font-size:15px}.countdown{gap:5px}.unit{padding:9px 4px}.value{font-size:16px}.contact{grid-template-columns:38px minmax(0,1fr) auto;padding:11px}.contact-icon{width:38px;height:38px}.watermark{grid-template-columns:repeat(2,1fr);grid-auto-rows:150px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+    @media print{.toolbar,.watermark,.toast{display:none}.page{padding:18mm}.panel{box-shadow:none}.primary::after{opacity:.025}}
+  </style>
+</head>
+<body>
+  <div class="watermark" aria-hidden="true"></div>
+  <div class="toolbar" aria-label="Display settings">
+    <button class="control eta-control" id="etaToggle" type="button" aria-pressed="false">ETA OFF</button>
+    <select class="control" id="language" aria-label="Language">
+      <option value="auto">AUTO</option><option value="zh-CN">简中</option><option value="zh-TW">繁中</option><option value="en">EN</option>
+    </select>
+    <button class="control theme-control" id="theme" type="button" aria-label="Color mode">THEME AUTO</button>
+  </div>
+
+  <main class="page">
+    <article class="panel" aria-labelledby="title">
+      <section class="primary">
+        <div class="status"><span class="pulse" aria-hidden="true"></span><span data-i18n="status">计划维护进行中</span></div>
+        <div class="kicker">SERVICE STATUS / MAINTENANCE</div>
+        <h1 id="title" data-i18n="title">网站正在维护</h1>
+        <p class="description" data-i18n="description">我们正在进行系统升级与例行维护，部分服务暂时不可用。技术团队正在加紧处理，感谢您的理解与耐心等待。</p>
+        <div class="progress" aria-hidden="true"></div>
+        <div class="meta"><span>HTTP 503</span><span data-i18n="scope">服务暂时不可用</span><span data-i18n="monitoring">状态持续监测中</span></div>
+
+        <div class="eta" id="etaPanel" hidden>
+          <div class="eta-head">
+            <div><div class="eta-label" data-i18n="etaLabel">预计恢复时间</div><div class="eta-time" id="etaTime">—</div></div>
+          </div>
+          <div class="countdown" aria-live="polite">
+            <div class="unit"><span class="value" id="days">00</span><small data-i18n="days">天</small></div>
+            <div class="unit"><span class="value" id="hours">00</span><small data-i18n="hours">时</small></div>
+            <div class="unit"><span class="value" id="minutes">00</span><small data-i18n="minutes">分</small></div>
+            <div class="unit"><span class="value" id="seconds">00</span><small data-i18n="seconds">秒</small></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side" aria-label="Emergency contact">
+        <h2 class="side-title" data-i18n="contactTitle">紧急需求</h2>
+        <p class="side-copy" data-i18n="contactCopy">如有无法等待维护完成的紧急事项，请联系管理员 Oliver Fan。</p>
+        <div class="contact-list">
+          <div class="contact">
+            <div class="contact-icon" aria-hidden="true">微</div>
+            <div><div class="contact-label">WECHAT</div><div class="contact-value" id="wechat">请填写微信号</div></div>
+            <button class="copy" type="button" data-copy="wechat" data-i18n="copy">复制</button>
+          </div>
+          <div class="contact">
+            <div class="contact-icon" aria-hidden="true">钉</div>
+            <div><div class="contact-label">DINGTALK</div><div class="contact-value" id="dingtalk">oliverfan0224</div></div>
+            <button class="copy" type="button" data-copy="dingtalk" data-i18n="copy">复制</button>
+          </div>
+        </div>
+        <div class="notice"><b data-i18n="noticeTitle">联系时请注明：</b><br><span data-i18n="noticeText">您的姓名、受影响的功能，以及事项紧急程度，便于管理员尽快判断与处理。</span></div>
+        <div class="signature">ADMINISTRATOR · OLIVER FAN<br>PREPARED BY OLIVER FAN</div>
+      </aside>
+    </article>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <noscript><div class="noscript">This page requires JavaScript for automatic language detection and countdown display.</div></noscript>
+
+  <script>
+    /* ================================================================
+       页面配置：部署前只需修改这一段。
+       recovery.enabled 决定预计恢复模块的默认开启状态；
+       recovery.target 使用 ISO 8601 格式，例如 2026-07-18T18:00:00+08:00。
+       ================================================================ */
+    const SITE_CONFIG={
+      administrator:'Oliver Fan',
+      wechat:'请填写微信号',
+      dingtalk:'oliverfan0224',
+      recovery:{enabled:false,target:''}
+    };
+
+    const TEXT={
+      'zh-CN':{status:'计划维护进行中',title:'网站正在维护',description:'我们正在进行系统升级与例行维护，部分服务暂时不可用。技术团队正在加紧处理，感谢您的理解与耐心等待。',scope:'服务暂时不可用',monitoring:'状态持续监测中',etaLabel:'预计恢复时间',days:'天',hours:'时',minutes:'分',seconds:'秒',contactTitle:'紧急需求',contactCopy:'如有无法等待维护完成的紧急事项，请联系管理员 Oliver Fan。',copy:'复制',copied:'已复制',copyFail:'无法复制',noticeTitle:'联系时请注明：',noticeText:'您的姓名、受影响的功能，以及事项紧急程度，便于管理员尽快判断与处理。',pending:'待管理员确认',reached:'预计恢复时间已到',etaOn:'ETA 开启',etaOff:'ETA 关闭',invalid:'恢复时间尚未设置'},
+      'zh-TW':{status:'計劃維護進行中',title:'網站正在維護',description:'我們正在進行系統升級與例行維護，部分服務暫時無法使用。技術團隊正在加緊處理，感謝您的理解與耐心等候。',scope:'服務暫時無法使用',monitoring:'狀態持續監測中',etaLabel:'預計恢復時間',days:'天',hours:'時',minutes:'分',seconds:'秒',contactTitle:'緊急需求',contactCopy:'如有無法等候維護完成的緊急事項，請聯絡管理員 Oliver Fan。',copy:'複製',copied:'已複製',copyFail:'無法複製',noticeTitle:'聯絡時請註明：',noticeText:'您的姓名、受影響的功能，以及事項緊急程度，以便管理員儘快判斷與處理。',pending:'待管理員確認',reached:'預計恢復時間已到',etaOn:'ETA 開啟',etaOff:'ETA 關閉',invalid:'恢復時間尚未設定'},
+      en:{status:'Scheduled maintenance in progress',title:'Website under maintenance',description:'We are performing scheduled maintenance and system upgrades. Some services are temporarily unavailable while our technical team completes the work. Thank you for your patience and understanding.',scope:'Service temporarily unavailable',monitoring:'Status actively monitored',etaLabel:'Estimated restoration',days:'Days',hours:'Hours',minutes:'Minutes',seconds:'Seconds',contactTitle:'Urgent assistance',contactCopy:'For urgent matters that cannot wait until maintenance is complete, please contact the administrator, Oliver Fan.',copy:'Copy',copied:'Copied',copyFail:'Unable to copy',noticeTitle:'Please include:',noticeText:'Your name, the affected function, and the urgency of the request so the administrator can assess it promptly.',pending:'Pending administrator confirmation',reached:'Estimated restoration time reached',etaOn:'ETA ON',etaOff:'ETA OFF',invalid:'Restoration time is not configured'}
+    };
+
+    const $=s=>document.querySelector(s);
+    const state={lang:'zh-CN',themeMode:'auto',etaVisible:SITE_CONFIG.recovery.enabled,timer:null};
+    const media=matchMedia('(prefers-color-scheme: dark)');
+    const supported=['zh-CN','zh-TW','en'];
+
+    function detectedLanguage(){
+      const list=navigator.languages?.length?navigator.languages:[navigator.language||'en'];
+      for(const raw of list){const l=raw.toLowerCase();if(l.startsWith('zh-hant')||l.includes('tw')||l.includes('hk'))return'zh-TW';if(l.startsWith('zh'))return'zh-CN';if(l.startsWith('en'))return'en'}
+      return'en';
+    }
+    function setLanguage(choice){
+      const lang=choice==='auto'?detectedLanguage():(supported.includes(choice)?choice:'en');state.lang=lang;
+      document.documentElement.lang=lang;document.documentElement.dir='ltr';
+      document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(TEXT[lang][key])el.textContent=TEXT[lang][key]});
+      $('#language').value=choice;localStorage.setItem('maintenance-language',choice);renderEta();
+    }
+    function applyTheme(){
+      const dark=state.themeMode==='dark'||(state.themeMode==='auto'&&media.matches);document.documentElement.dataset.theme=dark?'dark':'light';
+      document.querySelector('meta[name="theme-color"]').content=dark?'#07111f':'#f4f7fb';
+      $('#theme').textContent=state.themeMode==='auto'?'THEME AUTO':state.themeMode==='dark'?'DARK':'LIGHT';
+    }
+    function cycleTheme(){const order=['auto','light','dark'];state.themeMode=order[(order.indexOf(state.themeMode)+1)%order.length];localStorage.setItem('maintenance-theme',state.themeMode);applyTheme()}
+    function pad(n){return String(Math.max(0,n)).padStart(2,'0')}
+    function renderEta(){
+      const t=TEXT[state.lang];$('#etaPanel').hidden=!state.etaVisible;$('#etaToggle').setAttribute('aria-pressed',String(state.etaVisible));$('#etaToggle').textContent=state.etaVisible?t.etaOn:t.etaOff;
+      clearInterval(state.timer);if(!state.etaVisible)return;
+      const target=new Date(SITE_CONFIG.recovery.target);const valid=SITE_CONFIG.recovery.target&&!Number.isNaN(target.getTime());
+      $('#etaTime').textContent=valid?new Intl.DateTimeFormat(state.lang,{dateStyle:'medium',timeStyle:'short'}).format(target):t.pending;
+      function tick(){
+        if(!valid){['days','hours','minutes','seconds'].forEach(id=>$('#'+id).textContent='—');return}
+        const diff=Math.max(0,target-Date.now());const s=Math.floor(diff/1000);$('#days').textContent=pad(Math.floor(s/86400));$('#hours').textContent=pad(Math.floor(s%86400/3600));$('#minutes').textContent=pad(Math.floor(s%3600/60));$('#seconds').textContent=pad(s%60);if(diff===0){$('#etaTime').textContent=t.reached;clearInterval(state.timer)}
+      }
+      tick();state.timer=setInterval(tick,1000);
+    }
+    function toggleEta(){state.etaVisible=!state.etaVisible;localStorage.setItem('maintenance-eta',String(state.etaVisible));renderEta()}
+    function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.id);toast.id=setTimeout(()=>el.classList.remove('show'),1600)}
+    async function copyContact(id){const value=$('#'+id).textContent.trim();try{await navigator.clipboard.writeText(value);toast(TEXT[state.lang].copied)}catch{toast(TEXT[state.lang].copyFail)}}
+
+    $('#wechat').textContent=SITE_CONFIG.wechat;$('#dingtalk').textContent=SITE_CONFIG.dingtalk;
+    $('#theme').addEventListener('click',cycleTheme);$('#etaToggle').addEventListener('click',toggleEta);$('#language').addEventListener('change',e=>setLanguage(e.target.value));
+    document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',()=>copyContact(btn.dataset.copy)));
+    media.addEventListener?.('change',()=>{if(state.themeMode==='auto')applyTheme()});
+    const savedTheme=localStorage.getItem('maintenance-theme');if(['auto','light','dark'].includes(savedTheme))state.themeMode=savedTheme;
+    const savedEta=localStorage.getItem('maintenance-eta');if(savedEta!==null)state.etaVisible=savedEta==='true';
+    const savedLang=localStorage.getItem('maintenance-language')||'auto';
+    const wm=$('.watermark');for(let i=0;i<40;i++){const s=document.createElement('span');s.textContent='Prepared By Oliver Fan';wm.appendChild(s)}
+    applyTheme();setLanguage(savedLang);
+  </script>
+</body>
+</html>
