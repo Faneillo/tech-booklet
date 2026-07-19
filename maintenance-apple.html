@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="author" content="Oliver Fan">
+  <meta name="theme-color" content="#06070a">
+  <title>系统维护中 · System Maintenance</title>
+  <style>
+    :root{
+      color-scheme:light;
+      --bg:#f5f5f7;--bg2:#e9eef8;--text:#1d1d1f;--secondary:#6e6e73;
+      --surface:rgba(255,255,255,.66);--surface-strong:rgba(255,255,255,.9);
+      --surface-soft:rgba(255,255,255,.46);--stroke:rgba(0,0,0,.075);--stroke-hi:rgba(0,0,0,.13);
+      --blue:#0071e3;--blue-soft:rgba(0,113,227,.1);--green:#248a3d;--orange:#c93400;
+      --shadow:0 24px 80px rgba(52,64,84,.16),0 2px 12px rgba(52,64,84,.08);
+      --system:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang SC","Hiragino Sans GB","Segoe UI",sans-serif;
+      --mono:"SFMono-Regular","SF Mono",Menlo,monospace;
+    }
+    [data-theme="dark"]{
+      color-scheme:dark;
+      --bg:#06070a;--bg2:#101725;--text:#f5f5f7;--secondary:#a1a1a6;
+      --surface:rgba(28,28,30,.62);--surface-strong:rgba(35,35,38,.92);
+      --surface-soft:rgba(44,44,46,.44);--stroke:rgba(255,255,255,.095);--stroke-hi:rgba(255,255,255,.17);
+      --blue:#2997ff;--blue-soft:rgba(41,151,255,.13);--green:#30d158;--orange:#ff9f0a;
+      --shadow:0 34px 100px rgba(0,0,0,.42),0 2px 16px rgba(0,0,0,.28);
+    }
+    *{box-sizing:border-box}
+    html{font:100%/1.5 var(--system);-webkit-text-size-adjust:100%}
+    body{margin:0;min-height:100vh;color:var(--text);background:var(--bg);overflow-x:hidden;transition:background-color .35s ease,color .35s ease}
+    body::before,body::after{content:"";position:fixed;pointer-events:none;border-radius:50%;filter:blur(2px);opacity:.9;z-index:-2}
+    body::before{width:min(62vw,760px);height:min(62vw,760px);right:-18vw;top:-30vw;background:radial-gradient(circle,rgba(57,143,255,.25),rgba(57,143,255,0) 68%)}
+    body::after{width:min(55vw,680px);height:min(55vw,680px);left:-22vw;bottom:-30vw;background:radial-gradient(circle,rgba(121,197,255,.16),rgba(121,197,255,0) 70%)}
+    button,select{font:inherit;color:inherit}
+    button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    button:focus-visible,select:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 70%,transparent);outline-offset:3px}
+    .ambient{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(135deg,transparent 15%,rgba(255,255,255,.035),transparent 68%)}
+    .chrome{position:fixed;z-index:50;top:max(1rem,env(safe-area-inset-top));right:max(1rem,env(safe-area-inset-right));display:flex;gap:.45rem;padding:.35rem;border:1px solid var(--stroke);border-top-color:color-mix(in srgb,white 38%,var(--stroke));border-radius:1.25rem;background:var(--surface);box-shadow:0 .5rem 2rem rgba(0,0,0,.08);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%)}
+    .chrome-control{min-height:2.25rem;border:0;border-radius:.9rem;padding:0 .75rem;background:transparent;color:var(--secondary);font-size:.72rem;font-weight:650;letter-spacing:.015em;cursor:pointer;transition:background-color .16s,color .16s,transform .1s}
+    .chrome-control:hover{background:var(--surface-soft);color:var(--text)}
+    .chrome-control:active{transform:scale(.96);transition-duration:.08s}
+    select.chrome-control{appearance:none;padding-right:1.6rem;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - .8rem) 1rem,calc(100% - .55rem) 1rem;background-size:.25rem .25rem;background-repeat:no-repeat}
+    .chrome-control[aria-pressed="true"]{background:var(--blue-soft);color:var(--blue)}
+    main{min-height:100svh;display:grid;place-items:center;padding:6.5rem 1.5rem 3rem}
+    .stage{width:min(61rem,100%);text-align:center}
+    .symbol{position:relative;width:5rem;height:5rem;margin:0 auto 2.15rem;border:1px solid var(--stroke);border-top-color:color-mix(in srgb,white 35%,var(--stroke));border-radius:1.6rem;background:var(--surface);box-shadow:var(--shadow);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);display:grid;place-items:center;animation:materialize .55s cubic-bezier(.2,.8,.2,1) both}
+    .symbol::before{content:"";width:1.9rem;height:1.9rem;border:.16rem solid var(--blue);border-right-color:transparent;border-radius:50%;animation:rotate 1.45s linear infinite}
+    .symbol::after{content:"";position:absolute;inset:-.55rem;border:1px solid color-mix(in srgb,var(--blue) 26%,transparent);border-radius:2rem;opacity:.55}
+    @keyframes rotate{to{transform:rotate(360deg)}}
+    @keyframes materialize{from{opacity:0;transform:scale(.93);filter:blur(10px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+    .eyebrow{margin-bottom:1rem;color:var(--blue);font-size:.75rem;font-weight:650;letter-spacing:.08em;text-transform:uppercase}
+    h1{max-width:16ch;margin:0 auto;font-size:clamp(2.75rem,7.5vw,6.25rem);font-weight:720;line-height:.98;letter-spacing:-.045em;font-optical-sizing:auto;text-wrap:balance}
+    .summary{max-width:41rem;margin:1.7rem auto 0;color:var(--secondary);font-size:clamp(1.05rem,2vw,1.35rem);font-weight:430;line-height:1.55;letter-spacing:-.008em;text-wrap:pretty}
+    .status-line{display:flex;justify-content:center;align-items:center;gap:.55rem;margin-top:1.4rem;color:var(--secondary);font-size:.83rem;font-weight:540}
+    .status-dot{width:.52rem;height:.52rem;border-radius:50%;background:var(--orange);box-shadow:0 0 0 .28rem color-mix(in srgb,var(--orange) 14%,transparent)}
+    .actions{display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem;margin-top:2.25rem}
+    .action{min-height:3rem;border-radius:999px;padding:0 1.25rem;border:1px solid var(--stroke);font-size:.92rem;font-weight:620;cursor:pointer;transition:transform .1s,filter .16s,background-color .16s}
+    .action:active{transform:scale(.96);transition-duration:.08s}
+    .action.primary{border-color:transparent;background:var(--blue);color:white;box-shadow:0 .45rem 1.35rem color-mix(in srgb,var(--blue) 27%,transparent)}
+    .action.primary:hover{filter:brightness(1.07)}
+    .action.secondary{background:var(--surface);backdrop-filter:blur(22px) saturate(175%);-webkit-backdrop-filter:blur(22px) saturate(175%)}
+    .action.secondary:hover{background:var(--surface-strong)}
+    .eta-card{max-width:42rem;margin:2.2rem auto 0;padding:1.15rem;border:1px solid var(--stroke);border-top-color:color-mix(in srgb,white 32%,var(--stroke));border-radius:1.65rem;background:var(--surface);box-shadow:0 .8rem 2.8rem rgba(0,0,0,.08);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);transform-origin:50% 0;animation:materialize .42s cubic-bezier(.2,.8,.2,1) both}
+    .eta-card[hidden]{display:none}
+    .eta-title{color:var(--secondary);font-size:.75rem;font-weight:620;letter-spacing:.03em}
+    .eta-date{margin-top:.28rem;font-size:1rem;font-weight:650;letter-spacing:-.01em}
+    .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem;margin-top:1rem}
+    .count-unit{padding:.82rem .5rem;border-radius:1rem;background:var(--surface-soft)}
+    .count-value{display:block;font:660 1.25rem/1.1 var(--system);font-variant-numeric:tabular-nums;letter-spacing:-.025em}
+    .count-label{display:block;margin-top:.25rem;color:var(--secondary);font-size:.65rem;font-weight:600}
+    .fineprint{margin-top:2.25rem;color:var(--secondary);font-size:.72rem;letter-spacing:.015em}
+    .scrim{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity .2s ease;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+    .scrim.visible{opacity:1;pointer-events:auto}
+    .sheet{--sheet-y:110%;position:fixed;z-index:80;left:50%;bottom:max(.8rem,env(safe-area-inset-bottom));width:min(38rem,calc(100% - 1.4rem));padding:.6rem 1.25rem 1.35rem;transform:translate3d(-50%,var(--sheet-y),0);will-change:transform;border:1px solid var(--stroke);border-top-color:color-mix(in srgb,white 38%,var(--stroke));border-radius:2rem;background:var(--surface-strong);box-shadow:0 2rem 7rem rgba(0,0,0,.35);backdrop-filter:blur(38px) saturate(190%);-webkit-backdrop-filter:blur(38px) saturate(190%);touch-action:none}
+    .sheet-handle{width:2.3rem;height:.3rem;margin:.15rem auto 1rem;border-radius:999px;background:color-mix(in srgb,var(--secondary) 35%,transparent);cursor:grab}
+    .sheet-handle:active{cursor:grabbing}
+    .sheet-head{display:flex;justify-content:space-between;gap:1rem;align-items:start;padding:.15rem .1rem 1.1rem}
+    .sheet h2{margin:0;font-size:1.55rem;line-height:1.12;letter-spacing:-.025em}
+    .sheet p{margin:.4rem 0 0;color:var(--secondary);font-size:.9rem;line-height:1.55}
+    .close{width:2rem;height:2rem;border:0;border-radius:50%;background:var(--surface-soft);color:var(--secondary);font-size:1.15rem;line-height:1;cursor:pointer;transition:transform .1s,background-color .16s}
+    .close:active{transform:scale(.9)}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+    .contact{min-width:0;padding:1rem;border:1px solid var(--stroke);border-radius:1.25rem;background:var(--surface-soft);text-align:left}
+    .contact-label{color:var(--secondary);font-size:.68rem;font-weight:650;letter-spacing:.055em;text-transform:uppercase}
+    .contact-value{margin-top:.22rem;font-size:.96rem;font-weight:650;overflow-wrap:anywhere}
+    .copy{width:100%;margin-top:.75rem;min-height:2.45rem;border:0;border-radius:.85rem;background:var(--blue-soft);color:var(--blue);font-size:.8rem;font-weight:650;cursor:pointer;transition:transform .1s,filter .16s}
+    .copy:active{transform:scale(.97)}
+    .contact-note{margin-top:.7rem;padding:.9rem 1rem;border-radius:1.15rem;background:var(--surface-soft);color:var(--secondary);font-size:.78rem;line-height:1.55}
+    .contact-note b{color:var(--text)}
+    .toast{position:fixed;z-index:100;left:50%;bottom:max(1.5rem,env(safe-area-inset-bottom));transform:translate3d(-50%,1rem,0) scale(.96);opacity:0;pointer-events:none;padding:.65rem .95rem;border-radius:999px;background:var(--text);color:var(--bg);font-size:.76rem;font-weight:650;box-shadow:0 .7rem 2rem rgba(0,0,0,.22);transition:opacity .16s,transform .24s cubic-bezier(.2,.8,.2,1)}
+    .toast.show{opacity:1;transform:translate3d(-50%,0,0) scale(1)}
+    .watermark{position:fixed;right:1rem;bottom:.75rem;color:var(--secondary);opacity:.34;font:600 .58rem var(--mono);letter-spacing:.08em;pointer-events:none}
+    @media(max-width:640px){.chrome{left:.65rem;right:.65rem;top:max(.65rem,env(safe-area-inset-top));justify-content:flex-end}.chrome-control{padding:0 .58rem;font-size:.66rem}main{padding:6rem 1.1rem 2rem}.symbol{width:4.35rem;height:4.35rem;border-radius:1.4rem}h1{font-size:clamp(2.8rem,14vw,4.25rem)}.summary{font-size:1rem}.contact-grid{grid-template-columns:1fr}.sheet{border-radius:1.75rem;padding-left:1rem;padding-right:1rem}.watermark{display:none}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.12s!important}.symbol::before{animation:none;border-right-color:var(--blue)}}
+    @media(prefers-reduced-transparency:reduce){.chrome,.symbol,.eta-card,.action.secondary,.sheet{background:var(--surface-strong);backdrop-filter:none;-webkit-backdrop-filter:none}}
+    @media(prefers-contrast:more){.chrome,.symbol,.eta-card,.sheet,.contact{border-color:var(--text)}.surface{background:var(--surface-strong)}}
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="chrome" aria-label="Display preferences">
+    <button class="chrome-control" id="etaToggle" type="button" aria-pressed="false">ETA OFF</button>
+    <select class="chrome-control" id="language" aria-label="Language">
+      <option value="auto">AUTO</option><option value="zh-CN">简中</option><option value="zh-TW">繁中</option><option value="en">EN</option>
+    </select>
+    <button class="chrome-control" id="theme" type="button" aria-label="Appearance">AUTO</button>
+  </div>
+
+  <main>
+    <div class="stage">
+      <div class="symbol" aria-hidden="true"></div>
+      <div class="eyebrow" data-i18n="eyebrow">系统状态</div>
+      <h1 data-i18n="title">网站正在维护</h1>
+      <p class="summary" data-i18n="summary">我们正在进行计划内的系统升级与维护。部分服务暂时不可用，技术团队正在尽快完成相关工作。</p>
+      <div class="status-line"><span class="status-dot" aria-hidden="true"></span><span data-i18n="status">维护进行中 · 状态持续监测</span></div>
+      <div class="actions">
+        <button class="action primary" id="contactButton" type="button" data-i18n="contact">联系管理员</button>
+        <button class="action secondary" id="refreshButton" type="button" data-i18n="refresh">刷新状态</button>
+      </div>
+      <section class="eta-card" id="etaPanel" hidden aria-live="polite">
+        <div class="eta-title" data-i18n="etaTitle">预计恢复时间</div>
+        <div class="eta-date" id="etaDate">—</div>
+        <div class="countdown">
+          <div class="count-unit"><span class="count-value" id="days">00</span><span class="count-label" data-i18n="days">天</span></div>
+          <div class="count-unit"><span class="count-value" id="hours">00</span><span class="count-label" data-i18n="hours">小时</span></div>
+          <div class="count-unit"><span class="count-value" id="minutes">00</span><span class="count-label" data-i18n="minutes">分钟</span></div>
+          <div class="count-unit"><span class="count-value" id="seconds">00</span><span class="count-label" data-i18n="seconds">秒</span></div>
+        </div>
+      </section>
+      <div class="fineprint">HTTP 503 · SERVICE TEMPORARILY UNAVAILABLE</div>
+    </div>
+  </main>
+
+  <div class="scrim" id="scrim"></div>
+  <section class="sheet" id="contactSheet" role="dialog" aria-modal="true" aria-labelledby="contactTitle" aria-hidden="true">
+    <div class="sheet-handle" id="sheetHandle" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <div><h2 id="contactTitle" data-i18n="contactTitle">紧急联系</h2><p data-i18n="contactIntro">如有无法等待维护完成的紧急事项，请联系管理员 Oliver Fan。</p></div>
+      <button class="close" id="closeSheet" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="contact-grid">
+      <div class="contact"><div class="contact-label">WECHAT</div><div class="contact-value" id="wechat">请填写微信号</div><button class="copy" type="button" data-copy="wechat" data-i18n="copy">复制微信号</button></div>
+      <div class="contact"><div class="contact-label">DINGTALK</div><div class="contact-value" id="dingtalk">oliverfan0224</div><button class="copy" type="button" data-copy="dingtalk" data-i18n="copyDing">复制钉钉号</button></div>
+    </div>
+    <div class="contact-note"><b data-i18n="noteTitle">联系时请注明：</b> <span data-i18n="note">您的姓名、受影响的功能以及事项紧急程度，以便管理员尽快判断与处理。</span></div>
+  </section>
+  <div class="toast" id="toast" role="status"></div>
+  <div class="watermark">PREPARED BY OLIVER FAN</div>
+
+  <script>
+    /* 页面配置：填写微信号；如需倒计时，设置 enabled:true 和 ISO 8601 时间。 */
+    const SITE_CONFIG={administrator:'Oliver Fan',wechat:'请填写微信号',dingtalk:'oliverfan0224',recovery:{enabled:false,target:''}};
+    const TEXT={
+      'zh-CN':{eyebrow:'系统状态',title:'网站正在维护',summary:'我们正在进行计划内的系统升级与维护。部分服务暂时不可用，技术团队正在尽快完成相关工作。',status:'维护进行中 · 状态持续监测',contact:'联系管理员',refresh:'刷新状态',etaTitle:'预计恢复时间',days:'天',hours:'小时',minutes:'分钟',seconds:'秒',pending:'待管理员确认',reached:'预计恢复时间已到',etaOn:'ETA 开启',etaOff:'ETA 关闭',contactTitle:'紧急联系',contactIntro:'如有无法等待维护完成的紧急事项，请联系管理员 Oliver Fan。',copy:'复制微信号',copyDing:'复制钉钉号',copied:'已复制',copyFail:'无法复制',noteTitle:'联系时请注明：',note:'您的姓名、受影响的功能以及事项紧急程度，以便管理员尽快判断与处理。',refreshed:'状态已刷新'},
+      'zh-TW':{eyebrow:'系統狀態',title:'網站正在維護',summary:'我們正在進行計劃內的系統升級與維護。部分服務暫時無法使用，技術團隊正在儘快完成相關工作。',status:'維護進行中 · 狀態持續監測',contact:'聯絡管理員',refresh:'重新整理狀態',etaTitle:'預計恢復時間',days:'天',hours:'小時',minutes:'分鐘',seconds:'秒',pending:'待管理員確認',reached:'預計恢復時間已到',etaOn:'ETA 開啟',etaOff:'ETA 關閉',contactTitle:'緊急聯絡',contactIntro:'如有無法等候維護完成的緊急事項，請聯絡管理員 Oliver Fan。',copy:'複製微信號',copyDing:'複製釘釘號',copied:'已複製',copyFail:'無法複製',noteTitle:'聯絡時請註明：',note:'您的姓名、受影響的功能以及事項緊急程度，以便管理員儘快判斷與處理。',refreshed:'狀態已重新整理'},
+      en:{eyebrow:'System Status',title:'Website under maintenance',summary:'We are performing scheduled system upgrades and maintenance. Some services are temporarily unavailable while our technical team completes the work.',status:'Maintenance in progress · Status actively monitored',contact:'Contact administrator',refresh:'Refresh status',etaTitle:'Estimated restoration',days:'Days',hours:'Hours',minutes:'Minutes',seconds:'Seconds',pending:'Pending administrator confirmation',reached:'Estimated restoration time reached',etaOn:'ETA ON',etaOff:'ETA OFF',contactTitle:'Urgent contact',contactIntro:'For urgent matters that cannot wait, please contact the administrator, Oliver Fan.',copy:'Copy WeChat',copyDing:'Copy DingTalk',copied:'Copied',copyFail:'Unable to copy',noteTitle:'Please include:',note:'Your name, the affected function, and the urgency of your request so the administrator can respond promptly.',refreshed:'Status refreshed'}
+    };
+    const $=s=>document.querySelector(s),media=matchMedia('(prefers-color-scheme:dark)');
+    const state={lang:'zh-CN',theme:'auto',eta:SITE_CONFIG.recovery.enabled,timer:null,sheetOpen:false};
+    function detectedLanguage(){for(const raw of(navigator.languages||[navigator.language||'en'])){const l=raw.toLowerCase();if(l.includes('hant')||l.includes('tw')||l.includes('hk'))return'zh-TW';if(l.startsWith('zh'))return'zh-CN';if(l.startsWith('en'))return'en'}return'en'}
+    function setLanguage(choice){state.lang=choice==='auto'?detectedLanguage():choice;document.documentElement.lang=state.lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const v=TEXT[state.lang][el.dataset.i18n];if(v)el.textContent=v});$('#language').value=choice;localStorage.setItem('apple-maintenance-language',choice);renderEta()}
+    function applyTheme(){const dark=state.theme==='dark'||(state.theme==='auto'&&media.matches);document.documentElement.dataset.theme=dark?'dark':'light';document.querySelector('meta[name="theme-color"]').content=dark?'#06070a':'#f5f5f7';$('#theme').textContent=state.theme==='auto'?'AUTO':state.theme==='dark'?'DARK':'LIGHT'}
+    function cycleTheme(){const a=['auto','light','dark'];state.theme=a[(a.indexOf(state.theme)+1)%a.length];localStorage.setItem('apple-maintenance-theme',state.theme);applyTheme()}
+    function pad(n){return String(Math.max(0,n)).padStart(2,'0')}
+    function renderEta(){const t=TEXT[state.lang];$('#etaPanel').hidden=!state.eta;$('#etaToggle').setAttribute('aria-pressed',String(state.eta));$('#etaToggle').textContent=state.eta?t.etaOn:t.etaOff;clearInterval(state.timer);if(!state.eta)return;const target=new Date(SITE_CONFIG.recovery.target),valid=SITE_CONFIG.recovery.target&&!Number.isNaN(target.getTime());$('#etaDate').textContent=valid?new Intl.DateTimeFormat(state.lang,{dateStyle:'long',timeStyle:'short'}).format(target):t.pending;function tick(){if(!valid){['days','hours','minutes','seconds'].forEach(id=>$('#'+id).textContent='—');return}const d=Math.max(0,target-Date.now()),s=Math.floor(d/1000);$('#days').textContent=pad(Math.floor(s/86400));$('#hours').textContent=pad(Math.floor(s%86400/3600));$('#minutes').textContent=pad(Math.floor(s%3600/60));$('#seconds').textContent=pad(s%60);if(!d){$('#etaDate').textContent=t.reached;clearInterval(state.timer)}}tick();state.timer=setInterval(tick,1000)}
+    function toggleEta(){state.eta=!state.eta;localStorage.setItem('apple-maintenance-eta',String(state.eta));renderEta()}
+    function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.id);toast.id=setTimeout(()=>el.classList.remove('show'),1500)}
+    async function copy(id){try{await navigator.clipboard.writeText($('#'+id).textContent.trim());toast(TEXT[state.lang].copied)}catch{toast(TEXT[state.lang].copyFail)}}
+
+    /* Interruptible spring: retargets from the live presentation value. */
+    const sheet=$('#contactSheet'),scrim=$('#scrim');let spring={y:900,v:0,target:900,raf:0,last:0};
+    function sheetHeight(){return sheet.getBoundingClientRect().height+40}
+    function paint(y){spring.y=y;sheet.style.setProperty('--sheet-y',y+'px')}
+    function animateTo(target,velocity=0){cancelAnimationFrame(spring.raf);spring.target=target;spring.v=velocity;spring.last=performance.now();function frame(now){const dt=Math.min((now-spring.last)/1000,.032);spring.last=now;const k=310,c=35,a=-k*(spring.y-spring.target)-c*spring.v;spring.v+=a*dt;spring.y+=spring.v*dt;paint(spring.y);if(Math.abs(spring.y-spring.target)>.45||Math.abs(spring.v)>2){spring.raf=requestAnimationFrame(frame)}else{paint(spring.target);spring.v=0;if(spring.target>0){sheet.setAttribute('aria-hidden','true');state.sheetOpen=false}}}spring.raf=requestAnimationFrame(frame)}
+    function openSheet(){state.sheetOpen=true;sheet.setAttribute('aria-hidden','false');scrim.classList.add('visible');paint(Math.min(spring.y,sheetHeight()));animateTo(0,spring.v);requestAnimationFrame(()=>$('#closeSheet').focus())}
+    function closeSheet(velocity=0){scrim.classList.remove('visible');animateTo(sheetHeight(),Math.max(velocity,0))}
+    function project(v,d=.998){return(v/1000)*d/(1-d)}
+    function rubberband(x,dimension,c=.55){return(x*dimension*c)/(dimension+c*Math.abs(x))}
+    let drag=null;
+    $('#sheetHandle').addEventListener('pointerdown',e=>{if(!state.sheetOpen)return;cancelAnimationFrame(spring.raf);e.currentTarget.setPointerCapture(e.pointerId);drag={id:e.pointerId,start:e.clientY,startY:spring.y,lastY:e.clientY,lastT:performance.now(),v:0}});
+    $('#sheetHandle').addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;const now=performance.now(),dy=e.clientY-drag.start;drag.v=(e.clientY-drag.lastY)/Math.max((now-drag.lastT)/1000,.001);drag.lastY=e.clientY;drag.lastT=now;paint(dy<0?rubberband(dy,180):drag.startY+dy)});
+    function endDrag(e){if(!drag||e.pointerId!==drag.id)return;const projected=spring.y+project(drag.v,.99),dismiss=drag.v>720||projected>sheetHeight()*.34;const v=drag.v;drag=null;dismiss?closeSheet(v):animateTo(0,v)}
+    $('#sheetHandle').addEventListener('pointerup',endDrag);$('#sheetHandle').addEventListener('pointercancel',endDrag);
+
+    $('#wechat').textContent=SITE_CONFIG.wechat;$('#dingtalk').textContent=SITE_CONFIG.dingtalk;
+    $('#language').addEventListener('change',e=>setLanguage(e.target.value));$('#theme').addEventListener('click',cycleTheme);$('#etaToggle').addEventListener('click',toggleEta);$('#contactButton').addEventListener('click',openSheet);$('#closeSheet').addEventListener('click',()=>closeSheet());scrim.addEventListener('click',()=>closeSheet());
+    $('#refreshButton').addEventListener('click',()=>{renderEta();toast(TEXT[state.lang].refreshed)});document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>copy(b.dataset.copy)));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.sheetOpen)closeSheet()});media.addEventListener?.('change',()=>{if(state.theme==='auto')applyTheme()});
+    const savedTheme=localStorage.getItem('apple-maintenance-theme');if(['auto','light','dark'].includes(savedTheme))state.theme=savedTheme;const savedEta=localStorage.getItem('apple-maintenance-eta');if(savedEta!==null)state.eta=savedEta==='true';paint(sheetHeight());applyTheme();setLanguage(localStorage.getItem('apple-maintenance-language')||'auto');
+  </script>
+</body>
+</html>
