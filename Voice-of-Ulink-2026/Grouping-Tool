@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ulink Voice 2025 复赛抽签系统</title>
+  <meta name="description" content="Ulink Voice 2025 复赛分组器 —— 简洁的单文件随机分组工具，带科技感 UI 与导出功能。" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      scroll-behavior: smooth; /* 平滑滚动 */
+      overflow-y: auto; /* 开启竖向滚动 */
+      height: 100vh;
+      margin: 0;
+    }
+    /* 自定义滚动条样式 */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #7dd3fc 0%, #7c3aed 100%);
+      border-radius: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .neon {
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: 0.6px;
+      text-shadow: 0 0 8px rgba(99, 242, 255, 0.15), 0 0 18px rgba(124, 58, 237, 0.18), 0 0 28px rgba(59, 130, 246, 0.12);
+      background: linear-gradient(90deg, #7dd3fc 0%, #7c3aed 50%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .logo-glow { animation: pulse 2.6s infinite ease-in-out; }
+    @keyframes pulse {
+      0% { text-shadow: 0 0 6px rgba(124,58,237,0.12), 0 0 14px rgba(59,130,246,0.08); }
+      50% { text-shadow: 0 0 12px rgba(124,58,237,0.28), 0 0 28px rgba(59,130,246,0.18); }
+      100% { text-shadow: 0 0 6px rgba(124,58,237,0.12), 0 0 14px rgba(59,130,246,0.08); }
+    }
+
+    .group-card { backdrop-filter: blur(6px); }
+    .btn-volt:active { transform: translateY(1px) scale(0.997); }
+
+    /* canvas 全屏覆盖但不挡元素 */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-sky-900 via-indigo-900 to-purple-950 text-slate-100 relative">
+  <!-- 粒子背景 -->
+  <canvas id="particle-canvas"></canvas>
+
+  <main class="relative z-10 max-w-4xl mx-auto py-12 px-6 space-y-8">
+    <header class="flex items-center justify-between mb-8">
+      <div>
+        <div class="neon logo-glow">Ulink Voice 2025</div>
+        <div class="text-slate-300 text-sm">复赛抽签系统</div>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-4 bg-white/3 p-6 rounded-2xl border border-white/6 group-card shadow-lg">
+        <h2 class="text-lg font-semibold text-cyan-200">输入选手名单</h2>
+        <textarea id="names" placeholder="每行一个名字" class="w-full h-48 p-3 rounded-xl bg-transparent border border-white/10 text-slate-100 resize-y focus:outline-none focus:ring-2 focus:ring-cyan-500"></textarea>
+
+        <h3 class="text-sm text-slate-300">分组规则</h3>
+        <p class="text-xs text-slate-400 mb-2">根据赛制，所有超出9人报名小组报名者将被随机重新分组，进入的其余各组名额数为9人与已报名人数差值。</p>
+
+        <div class="flex gap-3">
+          <input id="groupSizes" type="text" placeholder="每组人数" class="flex-1 p-2 rounded-lg bg-transparent border border-white/10 text-slate-200 focus:outline-none" />
+          <input id="groupCount" type="number" min="1" placeholder="组数" class="w-36 p-2 rounded-lg bg-transparent border border-white/10 text-slate-200 focus:outline-none" />
+        </div>
+
+        <div class="flex gap-3 mt-4">
+          <button id="goBtn" onclick="randomizeGroups()" class="btn-volt flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-black font-semibold shadow hover:from-cyan-300 hover:to-indigo-400 transition">开始随机分组</button>
+          <button onclick="clearAll()" class="w-32 py-3 rounded-xl border border-white/10 text-slate-200">清除</button>
+        </div>
+
+        <div class="flex gap-3 mt-3">
+          <button onclick="downloadCSV()" class="py-2 px-3 rounded-lg border border-white/10 text-sm text-slate-100">导出结果（CSV）</button>
+          <button onclick="downloadHTML()" class="py-2 px-3 rounded-lg border border-white/10 text-sm text-slate-100">下载单文件页面</button>
+        </div>
+      </div>
+
+      <div class="bg-white/3 p-6 rounded-2xl border border-white/6 group-card shadow-lg max-h-[70vh] overflow-y-auto scroll-smooth">
+        <h2 class="text-lg font-semibold text-cyan-200">分组结果</h2>
+        <div id="resultWrap" class="mt-4 space-y-3">
+          <div class="text-slate-400 text-sm">还未分组，输入名单并点击“开始随机分组”。</div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center text-slate-400 text-sm pt-8 border-t border-white/10">
+      <p>© 2025 Oliver Fan. All rights reserved.</p>
+      <p class="mt-1">最终解释权由 <strong>2025 SLT 学生会</strong> 所有。</p>
+    </footer>
+  </main>
+
+  <script>
+    // --- 粒子背景 ---
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = innerWidth;
+    let H = canvas.height = innerHeight;
+    window.addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+    const particles = [];
+    for (let i = 0; i < Math.floor((W * H) / 60000); i++) {
+      particles.push({
+        x: Math.random() * W, y: Math.random() * H,
+        r: 0.6 + Math.random() * 1.6,
+        vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+        alpha: 0.1 + Math.random() * 0.25
+      });
+    }
+    function anim() {
+      ctx.clearRect(0, 0, W, H);
+      for (let p of particles) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(124,58,237,' + p.alpha + ')';
+        ctx.fill();
+      }
+      requestAnimationFrame(anim);
+    }
+    anim();
+
+    // --- 抽签逻辑 ---
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    let latestGroups = [];
+
+    function randomizeGroups() {
+      const raw = document.getElementById('names').value.trim().split('\n').map(s => s.trim()).filter(Boolean);
+      if (raw.length === 0) { alert('请先输入至少一个名字。'); return; }
+      const sizesText = document.getElementById('groupSizes').value.trim();
+      const groupCount = parseInt(document.getElementById('groupCount').value) || null;
+      let names = raw.slice(); shuffle(names);
+      let groups = [];
+
+      if (sizesText) {
+        const sizes = sizesText.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n > 0);
+        const total = sizes.reduce((a, b) => a + b, 0);
+        if (total !== names.length) {
+          if (!confirm('组大小总和与姓名数不符，是否自动调整？')) return;
+        }
+        let idx = 0;
+        for (let s of sizes) { groups.push(names.slice(idx, idx + s)); idx += s; }
+        if (idx < names.length) {
+          let extra = names.slice(idx); let gi = 0;
+          while (extra.length) { groups[gi % groups.length].push(extra.shift()); gi++; }
+        }
+      } else if (groupCount && groupCount > 0) {
+        const base = Math.floor(names.length / groupCount);
+        let remainder = names.length % groupCount, idx = 0;
+        for (let i = 0; i < groupCount; i++) {
+          const size = base + (remainder > 0 ? 1 : 0);
+          groups.push(names.slice(idx, idx + size));
+          idx += size; if (remainder > 0) remainder--;
+        }
+      } else {
+        const guess = Math.min(5, Math.max(1, Math.round(names.length / Math.ceil(names.length / 3))));
+        let idx = 0;
+        while (idx < names.length) {
+          const size = Math.min(guess, names.length - idx);
+          groups.push(names.slice(idx, idx + size)); idx += size;
+        }
+      }
+
+      latestGroups = groups;
+      renderGroups(groups);
+      pulseButtons();
+    }
+
+    function renderGroups(groups) {
+      const wrap = document.getElementById('resultWrap');
+      wrap.innerHTML = '';
+      for (let i = 0; i < groups.length; i++) {
+        const card = document.createElement('div');
+        card.className = 'bg-gradient-to-br from-white/5 to-white/3 p-4 rounded-2xl border border-white/6 shadow-md';
+        card.innerHTML = `<div class="flex justify-between text-cyan-300 font-semibold">
+            <div>第 ${i + 1} 组</div><div class="text-xs text-slate-400">${groups[i].length} 人</div></div>
+          <div class="mt-3 text-slate-100 whitespace-pre-line">${groups[i].join('\n')}</div>`;
+        wrap.appendChild(card);
+      }
+    }
+
+    function clearAll() {
+      document.getElementById('names').value = '';
+      document.getElementById('groupSizes').value = '';
+      document.getElementById('groupCount').value = '';
+      document.getElementById('resultWrap').innerHTML = '<div class="text-slate-400 text-sm">还未分组，输入名单并点击“开始随机分组”。</div>';
+      latestGroups = [];
+    }
+
+    function downloadCSV() {
+      if (!latestGroups.length) return alert('当前没有分组结果可导出。');
+      let rows = [];
+      latestGroups.forEach((g, i) => g.forEach(n => rows.push([`第 ${i + 1} 组`, n])));
+      const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ulink_voice_2025_groups.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    function downloadHTML() {
+      const htmlText = `<!-- Ulink Voice 2025 - 导出页面 -->\n` + document.documentElement.outerHTML;
+      const blob = new Blob([htmlText], { type: 'text/html;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ulink_voice_2025_draw.html';
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    function pulseButtons() {
+      const btn = document.getElementById('goBtn');
+      btn.animate([{ boxShadow: '0 0 0 rgba(99,102,241,0)' }, { boxShadow: '0 0 30px rgba(99,102,241,0.5)' }, { boxShadow: '0 0 0 rgba(99,102,241,0)' }], { duration: 600 });
+    }
+
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') randomizeGroups();
+    });
+  </script>
+</body>
+</html>
