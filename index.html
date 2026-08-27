@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#eef4f8" />
+    <title>Oliver's School Dashboard</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="sidebar" aria-label="学习终端导航">
+        <div class="brand">
+          <div class="brand-mark">ST</div>
+          <div>
+            <h1>Oliver's School Dashboard</h1>
+            <p>Class·Exam·Assignment</p>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="视图">
+          <button class="nav-item is-active" data-view="dashboard" type="button">总览</button>
+          <button class="nav-item" data-view="timetable" type="button">课表</button>
+          <button class="nav-item" data-view="exams" type="button">考试</button>
+          <button class="nav-item" data-view="tasks" type="button">作业</button>
+        </nav>
+
+        <section class="sync-panel">
+          <div>
+            <h2>iSAMS 同步</h2>
+            <p>第一版预留入口。建议后续使用浏览器授权会话或学校允许的导出/API。</p>
+          </div>
+          <button class="secondary-button" id="exportData" type="button">导出数据</button>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div class="topbar-main">
+            <p class="greeting" id="greetingLabel">Welcome back, Oliver.</p>
+            <h2 id="viewTitle">总览</h2>
+            <div class="date-strip" aria-label="北京时间">
+              <strong id="beijingDate">北京时间</strong>
+              <span id="beijingTime">--:--:--</span>
+              <span id="todayLabel">今天</span>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button" id="importData" type="button" title="导入数据" aria-label="导入数据">↥</button>
+            <button class="primary-button" id="quickAdd" type="button">新增</button>
+          </div>
+        </header>
+
+        <section class="now-panel" aria-label="当前课程状态">
+          <article class="now-card primary-status">
+            <span class="status-label" id="statusLabel">当前状态</span>
+            <strong id="currentCourse">加载中</strong>
+            <p id="currentCourseMeta">正在读取北京时间和今日课表</p>
+            <div class="countdown" id="countdownLabel">--</div>
+          </article>
+          <article class="now-card">
+            <span class="status-label">上一节</span>
+            <strong id="previousCourse">暂无</strong>
+            <p id="previousCourseMeta">--</p>
+          </article>
+          <article class="now-card">
+            <span class="status-label">下一节</span>
+            <strong id="nextCourse">暂无</strong>
+            <p id="nextCourseMeta">--</p>
+          </article>
+        </section>
+
+        <section class="view is-visible" id="dashboardView" aria-labelledby="viewTitle">
+          <div class="metrics">
+            <article class="metric">
+              <span>今日课程</span>
+              <strong id="metricClasses">0</strong>
+            </article>
+            <article class="metric">
+              <span>近期考试</span>
+              <strong id="metricExams">0</strong>
+            </article>
+            <article class="metric">
+              <span>待完成作业</span>
+              <strong id="metricTasks">0</strong>
+            </article>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h3>今天课表</h3>
+                <button class="text-button" data-view-shortcut="timetable" type="button">查看全部</button>
+              </div>
+              <div class="stack" id="todaySchedule"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h3>最近考试</h3>
+                <button class="text-button" data-view-shortcut="exams" type="button">查看全部</button>
+              </div>
+              <div class="stack" id="upcomingExams"></div>
+            </section>
+
+            <section class="panel wide">
+              <div class="panel-header">
+                <h3>作业进度</h3>
+                <button class="text-button" data-view-shortcut="tasks" type="button">查看全部</button>
+              </div>
+              <div class="progress-row">
+                <div class="progress-ring" id="progressRing" aria-label="作业完成率">0%</div>
+                <div class="stack" id="taskPreview"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="timetableView">
+          <div class="section-tools">
+            <div class="segmented" id="dayTabs" aria-label="星期筛选"></div>
+            <button class="secondary-button" data-add="class" type="button">新增课程</button>
+          </div>
+          <div class="timetable" id="timetableGrid"></div>
+        </section>
+
+        <section class="view" id="examsView">
+          <div class="section-tools">
+            <div class="search-wrap">
+              <span>⌕</span>
+              <input id="examSearch" type="search" placeholder="搜索科目或地点" />
+            </div>
+            <button class="secondary-button" data-add="exam" type="button">新增考试</button>
+          </div>
+          <div class="list" id="examList"></div>
+        </section>
+
+        <section class="view" id="tasksView">
+          <div class="section-tools">
+            <div class="segmented" id="taskFilters" aria-label="作业筛选">
+              <button class="is-active" data-task-filter="open" type="button">进行中</button>
+              <button data-task-filter="all" type="button">全部</button>
+              <button data-task-filter="done" type="button">已完成</button>
+            </div>
+            <button class="secondary-button" data-add="task" type="button">新增作业</button>
+          </div>
+          <div class="list" id="taskList"></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog class="modal" id="entryModal">
+      <form method="dialog" id="entryForm">
+        <header class="modal-header">
+          <h3 id="modalTitle">新增</h3>
+          <button class="icon-button" value="cancel" type="submit" aria-label="关闭">×</button>
+        </header>
+
+        <label>
+          类型
+          <select id="entryType">
+            <option value="class">课程</option>
+            <option value="exam">考试</option>
+            <option value="task">作业</option>
+          </select>
+        </label>
+
+        <div class="form-grid">
+          <label>
+            科目
+            <input id="subject" required placeholder="例如 Mathematics" />
+          </label>
+          <label>
+            地点
+            <input id="location" placeholder="教室 / 考场 / 线上" />
+          </label>
+          <label class="class-only">
+            星期
+            <select id="day">
+              <option value="1">周一</option>
+              <option value="2">周二</option>
+              <option value="3">周三</option>
+              <option value="4">周四</option>
+              <option value="5">周五</option>
+              <option value="6">周六</option>
+              <option value="0">周日</option>
+            </select>
+          </label>
+          <label class="class-only">
+            时间
+            <input id="time" placeholder="08:30-09:20" />
+          </label>
+          <label class="dated-only">
+            日期
+            <input id="date" type="date" />
+          </label>
+          <label class="dated-only">
+            截止/开始时间
+            <input id="dueTime" type="time" />
+          </label>
+          <label class="task-only">
+            进度
+            <input id="progress" type="range" min="0" max="100" step="5" value="0" />
+          </label>
+        </div>
+
+        <label>
+          备注
+          <textarea id="notes" rows="4" placeholder="范围、要求、复习重点等"></textarea>
+        </label>
+
+        <footer class="modal-actions">
+          <button class="danger-button" id="deleteEntry" type="button">删除</button>
+          <div>
+            <button class="secondary-button" value="cancel" type="submit">取消</button>
+            <button class="primary-button" id="saveEntry" value="default" type="submit">保存</button>
+          </div>
+        </footer>
+      </form>
+    </dialog>
+
+    <input class="hidden-file" id="fileInput" type="file" accept="application/json" />
+    <script src="./app.js?v=3"></script>
+  </body>
+</html>

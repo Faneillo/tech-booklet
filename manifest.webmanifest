@@ -1,0 +1,15 @@
+{
+  "name": "学习终端",
+  "short_name": "学习终端",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eef4f8",
+  "theme_color": "#eef4f8",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
