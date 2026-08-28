@@ -38,6 +38,7 @@ const defaultClasses = [
   { subject: "Media", teacher: "Ayyub", location: "Z301", day: 5, time: "14:15-14:55" },
   { subject: "Media", teacher: "Ayyub", location: "Z301", day: 5, time: "15:05-15:45" },
   { subject: "Economics", teacher: "Liliya Jiang", location: "Z308", day: 5, time: "15:50-16:30" },
+  { subject: "WX-Math P3", teacher: "Scott Hu", location: "Weixun Education", day: 6, time: "10:30-12:30" },
 ].map((item) => ({ ...item, id: crypto.randomUUID(), notes: item.teacher ? item.teacher : "" }));
 
 const seedData = {
