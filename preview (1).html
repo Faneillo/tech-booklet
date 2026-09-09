@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Oliver's Tech Booklet</title>
+  <meta
+    name="description"
+    content="Oliver's collection of projects, experiments, tools and technical notes."
+  >
+
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --card: rgba(255,255,255,0.72);
+      --text: #111113;
+      --muted: #707078;
+      --border: rgba(0,0,0,0.08);
+      --accent: #111111;
+      --shadow: 0 20px 60px rgba(0,0,0,0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "Segoe UI",
+        sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 50% -20%,
+          rgba(120,120,255,0.12),
+          transparent 40%
+        ),
+        var(--bg);
+
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* =========================
+       Navigation
+    ========================= */
+
+    nav {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+
+      width: min(900px, calc(100% - 32px));
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 12px 18px;
+
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+
+      border: 1px solid var(--border);
+      border-radius: 18px;
+
+      z-index: 100;
+
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 22px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      transition: 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* =========================
+       Hero
+    ========================= */
+
+    .hero {
+      min-height: 90vh;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+
+      padding: 140px 24px 80px;
+    }
+
+    .eyebrow {
+      font-size: 14px;
+      color: var(--muted);
+
+      margin-bottom: 22px;
+
+      padding: 6px 12px;
+
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      background: rgba(255,255,255,0.55);
+    }
+
+    .hero h1 {
+      font-size: clamp(52px, 9vw, 100px);
+      line-height: 0.95;
+      letter-spacing: -0.065em;
+      font-weight: 800;
+
+      max-width: 1000px;
+    }
+
+    .hero h1 span {
+      color: #777780;
+    }
+
+    .hero p {
+      max-width: 620px;
+
+      margin-top: 28px;
+
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+
+      margin-top: 36px;
+    }
+
+    .button {
+      padding: 12px 20px;
+
+      border-radius: 12px;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      transition: 0.25s;
+    }
+
+    .button-primary {
+      background: #111;
+      color: white;
+    }
+
+    .button-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+
+    .button-secondary {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.7);
+    }
+
+    .button-secondary:hover {
+      background: white;
+      transform: translateY(-2px);
+    }
+
+    /* =========================
+       Sections
+    ========================= */
+
+    section {
+      width: min(1100px, calc(100% - 40px));
+      margin: auto;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+
+      margin-bottom: 28px;
+    }
+
+    .section-header h2 {
+      font-size: 32px;
+      letter-spacing: -0.04em;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* =========================
+       Projects
+    ========================= */
+
+    .projects {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 18px;
+
+      padding-bottom: 100px;
+    }
+
+    .project {
+      position: relative;
+
+      min-height: 300px;
+
+      padding: 30px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      border: 1px solid var(--border);
+      border-radius: 24px;
+
+      background: var(--card);
+      backdrop-filter: blur(20px);
+
+      box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+
+      overflow: hidden;
+
+      transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+
+    .project::before {
+      content: "";
+
+      position: absolute;
+
+      width: 200px;
+      height: 200px;
+
+      right: -80px;
+      top: -80px;
+
+      background: rgba(120,120,255,0.08);
+
+      border-radius: 50%;
+
+      filter: blur(30px);
+    }
+
+    .project:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow);
+      border-color: rgba(0,0,0,0.15);
+    }
+
+    .project-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .project-number {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .project-arrow {
+      font-size: 22px;
+
+      transition: transform 0.25s;
+    }
+
+    .project:hover .project-arrow {
+      transform: translate(4px,-4px);
+    }
+
+    .project h3 {
+      font-size: 28px;
+      letter-spacing: -0.04em;
+      margin-top: 45px;
+    }
+
+    .project p {
+      margin-top: 10px;
+
+      color: var(--muted);
+      font-size: 15px;
+
+      max-width: 450px;
+    }
+
+    .tags {
+      display: flex;
+      gap: 7px;
+
+      margin-top: 25px;
+
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 5px 9px;
+
+      border-radius: 8px;
+
+      background: rgba(0,0,0,0.045);
+
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* =========================
+       About
+    ========================= */
+
+    .about {
+      margin-bottom: 100px;
+
+      padding: 45px;
+
+      border-radius: 26px;
+
+      background: #111;
+      color: white;
+    }
+
+    .about h2 {
+      font-size: 36px;
+      letter-spacing: -0.04em;
+    }
+
+    .about p {
+      max-width: 700px;
+
+      margin-top: 16px;
+
+      color: #aaa;
+
+      font-size: 16px;
+    }
+
+    /* =========================
+       Footer
+    ========================= */
+
+    footer {
+      border-top: 1px solid var(--border);
+
+      padding: 30px 20px;
+
+      color: var(--muted);
+
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      width: min(1100px, 100%);
+      margin: auto;
+
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* =========================
+       Mobile
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      nav {
+        top: 10px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: 80vh;
+      }
+
+      .hero h1 {
+        font-size: 58px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 260px;
+      }
+
+      .projects {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        display: block;
+      }
+
+      .section-header p {
+        margin-top: 5px;
+      }
+
+      .about {
+        padding: 30px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <!-- =========================
+       Navigation
+  ========================== -->
+
+  <nav>
+
+    <a href="#" class="logo">
+      Oliver's Tech Booklet.
+    </a>
+
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a
+        href="https://github.com/Faneillo/tech-booklet"
+        target="_blank"
+      >
+        GitHub ↗
+      </a>
+    </div>
+
+  </nav>
+
+
+  <!-- =========================
+       Hero
+  ========================== -->
+
+  <header class="hero">
+
+    <div class="eyebrow">
+      Homepage
+    </div>
+
+    <h1>
+      Things I build.<br>
+      <span>Things I learn.</span>
+    </h1>
+
+    <p>
+      A collection of my technical experiments, school tools,
+      creative projects and things I decided to build.
+    </p>
+
+    <div class="hero-buttons">
+
+      <a href="#projects" class="button button-primary">
+        Explore projects
+      </a>
+
+      <a
+        href="https://github.com/Faneillo"
+        target="_blank"
+        class="button button-secondary"
+      >
+        GitHub ↗
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       Projects
+  ========================== -->
+
+  <section id="projects">
+
+    <div class="section-header">
+
+      <div>
+        <h2>Projects</h2>
+        <p>Selected things from my tech booklet.</p>
+      </div>
+
+      <p>06 projects</p>
+
+    </div>
+
+
+    <div class="projects">
+
+
+      <!-- School Terminal -->
+
+      <a
+        class="project"
+        href="./School-Terminal/"
+      >
+
+        <div>
+
+          <div class="project-top">
+
+            <span class="project-number">
+              01 / PRODUCTIVITY
+            </span>
+
+            <span class="project-arrow">
+              ↗
+            </span>
+
+          </div>
+
+          <h3>
+            School Terminal
+          </h3>
+
+          <p>
+            A personal school dashboard for managing
+            timetable, exams and assignments.
+          </p>
+
+        </div>
+
+        <div class="tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">PWA</span>
+          <span class="tag">Dashboard</span>
+        </div>
+
+      </a>
+
+
+      <!-- VALORANT -->
+
+      <a
+        class="project"
+        href="./VALORANT/"
+      >
+
+        <div>
+
+          <div class="project-top">
+
+            <span class="project-number">
+              02 / EXPERIMENT
+            </span>
+
+            <span class="project-arrow">
+              ↗
+            </span>
+
+          </div>
+
+          <h3>
+            VALORANT
+          </h3>
+
+          <p>
+            An experimental web project built around
+            VALORANT-related interaction and utilities.
+          </p>
+
+        </div>
+
+        <div class="tags">
+          <span class="tag">HTML</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Web</span>
+        </div>
+
+      </a>
+
+
+      <!-- Voice of Ulink -->
+
+      <a
+        class="project"
+        href="./Voice-of-Ulink-2026/"
+      >
+
+        <div>
+
+          <div class="project-top">
+
+            <span class="project-number">
+              03 / SCHOOL
+            </span>
+
+            <span class="project-arrow">
+              ↗
+            </span>
+
+          </div>
+
+          <h3>
+            Voice of Ulink
+          </h3>
+
+          <p>
+            A randomised grouping and draw system
+            created for Voice of Ulink 2026.
+          </p>
+
+        </div>
+
+        <div class="tags">
+          <span class="tag">Tailwind</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">Randomisation</span>
+        </div>
+
+      </a>
+
+
+      <!-- Stage Management -->
+
+      <a
+        class="project"
+        href="./stage-management/tutorial-booklet/"
+      >
+
+        <div>
+
+          <div class="project-top">
+
+            <span class="project-number">
+              04 / GUIDE
+            </span>
+
+            <span class="project-arrow">
+              ↗
+            </span>
+
+          </div>
+
+          <h3>
+            Stage Management
+          </h3>
+
+          <p>
+            A tutorial booklet for stage management,
+            production workflows and event operations.
+          </p>
+
+        </div>
+
+        <div class="tags">
+          <span class="tag">Documentation</span>
+          <span class="tag">Event</span>
+          <span class="tag">Production</span>
+        </div>
+
+      </a>
+
+
+      <!-- Maintenance -->
+
+      <a
+        class="project"
+        href="./maintenance/"
+      >
+
+        <div>
+
+          <div class="project-top">
+
+            <span class="project-number">
+              05 / SYSTEM
+            </span>
+
+            <span class="project-arrow">
+              ↗
+            </span>
+
+          </div>
+
+          <h3>
+            Maintenance
+          </h3>
+
+          <p>
+            A maintenance interface and system page
+            for web projects.
+          </p>
+
+        </div>
+
+        <div class="tags">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">UI</span>
+        </div>
+
+      </a>
+
+
+      <!-- Maintenance A -->
+
+      <a
+        class="project"
+        href="./maintenance-a/"
+      >
+
+        <div>
+
+          <div class="project-top">
+
+            <span class="project-number">
+              06 / SYSTEM
+            </span>
+
+            <span class="project-arrow">
+              ↗
+            </span>
+
+          </div>
+
+          <h3>
+            Maintenance A
+          </h3>
+
+          <p>
+            An alternative maintenance page and
+            interface experiment.
+          </p>
+
+        </div>
+
+        <div class="tags">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">UI</span>
+        </div>
+
+      </a>
+
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       About
+  ========================== -->
+
+  <section id="about">
+
+    <div class="about">
+
+      <h2>
+        Built by Faneillo.
+      </h2>
+
+      <p>
+        <a href="https://www.faneillo.online">Oliver's Tech Booklet</a> © 2026 by <a href="https://example.com">Oliver Fan</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+      </p>
+
+      <div class="hero-buttons">
+
+        <a
+          href="https://github.com/Faneillo"
+          target="_blank"
+          class="button button-secondary"
+          style="background:white;color:#111;"
+        >
+          View GitHub ↗
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       Footer
+  ========================== -->
+
+  <footer>
+
+    <div class="footer-inner">
+
+      <span>
+        © <span id="year"></span> Oliver Fan
+      </span>
+
+      <span>
+        Oliver's Tech Booklet
+      </span>
+
+    </div>
+
+  </footer>
+
+
+  <script>
+
+    // Automatically update year
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+  </script>
+
+</body>
+</html>
